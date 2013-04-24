@@ -23,8 +23,10 @@ class ServiceTree
 				WHERE sl2.servicedownid = s.serviceid
 			)
 		');
-		if(!$stmt->execute())
-			Connection::HttpError(500, 'Failed to query service list.');
+		if(!$stmt->execute()) {
+			$err = $stmt->errorInfo();
+			Connection::HttpError(500, "Failed to query service list.<br/>$err[0] $err[2]");
+		}
 
 		$ret = array();
 		while($row = $stmt->fetch(PDO::FETCH_ASSOC))
