@@ -164,6 +164,22 @@ function ShowEditService(nodeObj, rootServiceName) {
 		div.find('input[name=setdef]').off('click');
 	};
 
+	var validateFields = function() {
+		if(div.find('input[name=name]').val() == '') {
+			$('<span>É necessário dar um nome ao serviço.</span>').modalForm({ title:'Oops...' });
+			return false;
+		}
+		for(var i = 0; i < props.length; ++i) {
+			var filled = div.find('input[name=w' + props[i] + ']').val() != ''
+				&& div.find('input[name=t' + props[i] + ']').val() != '';
+			if(!filled) {
+				$('<span>É necessário preencher todos os valores.</span>').modalForm({ title:'Oops...' });
+				return false;
+			}
+		}
+		return true;
+	};
+
 	popup.ok(unbindEvents);     // after user clicks OK
 	popup.cancel(unbindEvents); // after user clicks Cancel
 
@@ -188,22 +204,24 @@ function ShowEditService(nodeObj, rootServiceName) {
 	});
 
 	popup.validateSubmit(function() {
-		unbindEvents();
-		var retNode = { // build return object
-			id: nodeObj.data.serviceid,
-			name: div.find('input[name=name]').val(),
-			//parent:
-			algorithm: div.find('select[name=algorithm]').val(),
-			goodsla: div.find('input[name=goodSla]').val(),
-			showsla: div.find('input[name=showSla]').prop('checked') ? 1 : 0,
-			triggerid: div.find('input[name=triggerId]').val()
-		};
-		if(retNode.triggerid == '') retNode.triggerid = null;
-		for(var i = 0; i < props.length; ++i) {
-			retNode['weight_' + props[i]] = div.find('input[name=w' + props[i] + ']').val(),
-			retNode['threshold_' + props[i]] = div.find('input[name=t' + props[i] + ']').val()
+		if(validateFields()) {
+			unbindEvents();
+			var retNode = { // build return object
+				id: nodeObj.data.serviceid,
+				name: div.find('input[name=name]').val(),
+				//parent:
+				algorithm: div.find('select[name=algorithm]').val(),
+				goodsla: div.find('input[name=goodSla]').val(),
+				showsla: div.find('input[name=showSla]').prop('checked') ? 1 : 0,
+				triggerid: div.find('input[name=triggerId]').val()
+			};
+			if(retNode.triggerid == '') retNode.triggerid = null;
+			for(var i = 0; i < props.length; ++i) {
+				retNode['weight_' + props[i]] = div.find('input[name=w' + props[i] + ']').val(),
+				retNode['threshold_' + props[i]] = div.find('input[name=t' + props[i] + ']').val()
+			}
+			popup.continueSubmit(retNode); // ok() event will receive a node object
 		}
-		popup.continueSubmit(retNode); // ok() event will receive a node object
 	});
 
 	return popup; // can call ok() event to handle it
