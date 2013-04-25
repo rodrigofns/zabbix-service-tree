@@ -33,27 +33,33 @@
 		</table>
 		<hr/>
 
-		<table>
-		<tr><th>Severidade</th><th>Peso</th><th>Limiar</th></tr>
-		<tr><td>Normal</td>
-			<td><input type="text" size="5" name="wnormal"/></td><!-- weight -->
-			<td><input type="text" size="5" name="tnormal"/></td></tr><!-- threshold -->
-		<tr><td>Informação</td>
-			<td><input type="text" size="5" name="winformation"/></td>
-			<td><input type="text" size="5" name="tinformation"/></td></tr>
-		<tr><td>Alerta</td>
-			<td><input type="text" size="5" name="walert"/></td>
-			<td><input type="text" size="5" name="talert"/></td></tr>
-		<tr><td>Média</td>
-			<td><input type="text" size="5" name="waverage"/></td>
-			<td><input type="text" size="5" name="taverage"/></td></tr>
-		<tr><td>Alta</td>
-			<td><input type="text" size="5" name="wmajor"/></td>
-			<td><input type="text" size="5" name="tmajor"/></td></tr>
-		<tr><td>Desastre</td>
-			<td><input type="text" size="5" name="wcritical"/></td>
-			<td><input type="text" size="5" name="tcritical"/></td></tr>
-		</table>
+		<div style="float:left;">
+			<table>
+			<tr><th>Severidade</th><th>Peso</th><th>Limiar</th></tr>
+			<tr><td>Normal</td>
+				<td><input type="text" size="5" name="wnormal"/></td><!-- weight -->
+				<td><input type="text" size="5" name="tnormal"/></td></tr><!-- threshold -->
+			<tr><td>Informação</td>
+				<td><input type="text" size="5" name="winformation"/></td>
+				<td><input type="text" size="5" name="tinformation"/></td></tr>
+			<tr><td>Alerta</td>
+				<td><input type="text" size="5" name="walert"/></td>
+				<td><input type="text" size="5" name="talert"/></td></tr>
+			<tr><td>Média</td>
+				<td><input type="text" size="5" name="waverage"/></td>
+				<td><input type="text" size="5" name="taverage"/></td></tr>
+			<tr><td>Alta</td>
+				<td><input type="text" size="5" name="wmajor"/></td>
+				<td><input type="text" size="5" name="tmajor"/></td></tr>
+			<tr><td>Desastre</td>
+				<td><input type="text" size="5" name="wcritical"/></td>
+				<td><input type="text" size="5" name="tcritical"/></td></tr>
+			</table>
+		</div>
+		<div>&nbsp;<br/>
+			&nbsp; &nbsp; &nbsp; <input type="button" name="setdef" value="valores default"
+				title="Preencher os campos com os valores default"/>
+		</div>
 		<!--<hr/>
 		Outras ações:<br/>
 		<a href="#" id="lnkDeleteService" title="Remover este serviço da árvore">deletar este serviço</a> |
@@ -139,6 +145,13 @@ function ShowEditService(nodeObj, rootServiceName) {
 
 		chkToggleSla: function() {
 			div.find('input[name=goodSla]').prop('readonly', !$(this).prop('checked'));
+		},
+
+		btnSetDefaults: function(ev) {
+			for(var i = 0; i < props.length; ++i) {
+				div.find('input[name=w' + props[i] + ']').val(i == 0 ? 0 : Math.pow(10, i - 1));
+				div.find('input[name=t' + props[i] + ']').val(i == 0 ? 0 : Math.pow(10, i - 1));
+			}
 		}
 	};
 
@@ -148,6 +161,7 @@ function ShowEditService(nodeObj, rootServiceName) {
 		div.find('a#lnkChangeParent').off('click');
 		div.find('a#lnkChooseTrigger').off('click');
 		div.find('input[name=showSla]').off('change');
+		div.find('input[name=setdef]').off('click');
 	};
 
 	popup.ok(unbindEvents);     // after user clicks OK
@@ -167,6 +181,7 @@ function ShowEditService(nodeObj, rootServiceName) {
 			div.find('a#lnkChangeParent').on('click', events.lnkChangeParentService);
 			div.find('a#lnkChooseTrigger').on('click', events.lnkChooseTrigger);
 			div.find('input[name=showSla]').on('change', events.chkToggleSla);
+			div.find('input[name=setdef]').on('click', events.btnSetDefaults);
 			data.children = nodeObj.children;
 			fillFields(data); // object with tons of info of the service
 		});
