@@ -132,8 +132,8 @@ class ServiceTree
 				REPLACE(t.description, "{HOSTNAME}", h.host) AS triggerdesc,
 				s2.serviceid AS parentserviceid, s2.name AS parentname
 			FROM services s
-			INNER JOIN service_threshold st ON st.idservice = s.serviceid
-			INNER JOIN service_weight sw ON sw.idservice = s.serviceid
+			LEFT JOIN service_threshold st ON st.idservice = s.serviceid
+			LEFT JOIN service_weight sw ON sw.idservice = s.serviceid
 			LEFT JOIN services_links sl ON sl.servicedownid = s.serviceid
 				LEFT JOIN services s2 ON s2.serviceid = sl.serviceupid
 			LEFT JOIN triggers t ON t.triggerid = s.triggerid
