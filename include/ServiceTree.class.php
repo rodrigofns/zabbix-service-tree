@@ -143,8 +143,10 @@ class ServiceTree
 			WHERE s.serviceid = :serviceId
 		');
 		$stmt->bindParam(':serviceId', $serviceId);
-		if(!$stmt->execute())
-			Connection::HttpError(500, "Failed to query service $serviceId.");
+		if(!$stmt->execute()) {
+			$err = $stmt->errorInfo();
+			Connection::HttpError(500, "Failed to query service $serviceId.<br/>$err[0] $err[2]");
+		}
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC); // just 1 service with the ID
 		return array(
