@@ -1,4 +1,8 @@
-<? session_start(); ?>
+<?php
+	require_once('include/Install.class.php');
+	session_start();
+	Install::CheckDbTables();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	"http://www.w3.org/TR/html4/loose.dtd">
 <html>
