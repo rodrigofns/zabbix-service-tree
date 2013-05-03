@@ -14,6 +14,7 @@ class Connection
 	 */
 	public static function HttpError($code, $msg)
 	{
+		error_log($msg, 0); // also log to Apache
 		$httpErr = array(
 			400 => 'Bad Request',
 			401 => 'Unauthorized',
