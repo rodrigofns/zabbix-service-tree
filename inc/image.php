@@ -1,5 +1,5 @@
 <?php
-require_once('../include/Connection.class.php');
+require_once('Connection.class.php');
 
 if(isset($_GET['id']))
 {

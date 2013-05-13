@@ -17,9 +17,10 @@ function TreeGraph(canvasId) {
 		xBezierRadius: 14,
 		imgSize: 22, // if not null, will force size for all images
 		font: '10pt Arial',
-		color: 'rgba(255,255,255,0.5)', // default for nodes without color
+		bgColor: 'rgba(255,255,255,0.5)', // default for nodes without color
+		textColor: '#121212',
 		borderColor: '#888',
-		lineColor: '#AAA',
+		lineColor: '#AAA', // bezier lines and circles
 		animateTime: 100,
 		storageKey: 'TreeGraph_' + canvasId
 	};
@@ -201,7 +202,8 @@ function TreeGraph(canvasId) {
 						for(var i = 0; i < destNode.children.length; ++i) // supposedly the same tree
 							SetPosFromOldNode(destNode.children[i], srcNode.children[i]);
 					}
-					SetPosFromOldNode(Us.rootNode, oldTree);
+					if(oldTree.pos.x == 0 && oldTree.pos.y == 0) Placement.ResetRootPos(matrix); // previous tree was neved moved
+					else SetPosFromOldNode(Us.rootNode, oldTree);
 				} else { // this tree has never been stored
 					Placement.ResetRootPos(matrix);
 				}
@@ -224,7 +226,7 @@ function TreeGraph(canvasId) {
 				Util.AddPropertiesIfNotExist(node, { // these are the properties available to the user
 					text: '(NO TEXT)',
 					children: [],
-					color: CONSTANTS.color,
+					color: CONSTANTS.bgColor,
 					image: null, // URL
 					data: null // any user data, will be preserved when returning the node at events
 				});
@@ -292,7 +294,7 @@ function TreeGraph(canvasId) {
 					for(var i = 0; i < node.children.length; ++i)
 						CreateMatrix(node.children[i]);
 			}
-			CreateMatrix(Us.rootNode);
+			if(Us.rootNode !== null) CreateMatrix(Us.rootNode);
 			return matrix;
 		},
 
@@ -353,6 +355,16 @@ function TreeGraph(canvasId) {
 			Node.Render(matrix, function() { Node.FlushToStorage(); });
 		},
 
+		FitParentContainer: function() {
+			// Sample container that fills a whole page:
+			// div#one { width:100%; height:100%; }
+			Us.context.canvas.style.width = '100%';
+			Us.context.canvas.style.height = '100%';
+			Us.context.canvas.width = Us.context.canvas.offsetWidth;
+			Us.context.canvas.height = Us.context.canvas.offsetHeight;
+			Node.Render(Node.VisibleMatrix()); // redraw
+		},
+
 		Paint: function(visibleMatrix, pct) {
 			Us.context.save();
 			Us.context.clearRect(0, 0, Us.context.canvas.width, Us.context.canvas.height);
@@ -396,12 +408,15 @@ function TreeGraph(canvasId) {
 								node.posTmp.x + 1, node.posTmp.y + 1);
 						}
 					}
+					Us.context.save();
+					Us.context.fillStyle = CONSTANTS.textColor;
 					Us.context.fillText(node.text,
 						node.posTmp.x + CONSTANTS.xBoxPadding +
 							(node.imageObj !== null ?
 								(CONSTANTS.imgSize !== null ? CONSTANTS.imgSize : node.imageObj.width) + 1
 							: 0),
 						node.posTmp.y + node.rect.cy / 2);
+					Us.context.restore();
 				}
 			}
 			Us.context.restore();
@@ -741,6 +756,8 @@ function TreeGraph(canvasId) {
 		collapseAll: function() { Node.CollapseAll(); return Us.retObj; },
 		expandAll: function() { Node.ExpandAll(); return Us.retObj; },
 		countNodes: function() { return Node.Count(); },
-		redraw: function() { Node.Render(Node.VisibleMatrix()); return Us.retObj; }
+		redraw: function() { Node.Render(Node.VisibleMatrix()); return Us.retObj; },
+		clear: function() { Us.context.clearRect(0, 0, Us.context.canvas.width, Us.context.canvas.height); return Us.retObj; },
+		fitParentContainer: function() { Node.FitParentContainer(); return Us.retObj; }
 	});
 }

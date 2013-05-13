@@ -1,6 +1,6 @@
 <?php
 session_start();
-require('include/Connection.class.php');
+require('inc/Connection.class.php');
 
 // Requests processing.
 if(isset($_POST['logoff']))

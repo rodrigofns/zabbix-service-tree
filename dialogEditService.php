@@ -76,7 +76,7 @@ function ShowEditService(nodeObj, rootServiceName) {
 	var div = $('div#dialogEditService'); // pointer to DIV
 	var props = [ 'normal', 'information', 'alert', 'average', 'major', 'critical' ];
 
-	var fillFields = function(serviceObj) {
+	function FillFields(serviceObj) {
 		var y = serviceObj !== null;
 		div.find('input[name=name]').val(y ? serviceObj.name : '');
 		div.find('input[name=parentServiceName]').val(y ? serviceObj.parent.name : '');
@@ -99,10 +99,10 @@ function ShowEditService(nodeObj, rootServiceName) {
 			div.find('input[name=w' + props[i] + ']').val(y ? serviceObj.weight[props[i]] : '');
 			div.find('input[name=t' + props[i] + ']').val(y ? serviceObj.threshold[props[i]] : '');
 		}
-	};
+	}
 
 	div.find('input[name=rootServiceName]').val(rootServiceName); // keep service name on input/hidden
-	fillFields(null); // clear fields
+	FillFields(null); // clear fields
 
 	// Displaying the form.
 
@@ -164,34 +164,18 @@ function ShowEditService(nodeObj, rootServiceName) {
 		div.find('input[name=setdef]').off('click');
 	};
 
-	var validateFields = function() {
-		if(div.find('input[name=name]').val() == '') {
-			$('<span>É necessário dar um nome ao serviço.</span>').modalForm({ title:'Oops...' });
-			return false;
-		}
-		for(var i = 0; i < props.length; ++i) {
-			var filled = div.find('input[name=w' + props[i] + ']').val() != ''
-				&& div.find('input[name=t' + props[i] + ']').val() != '';
-			if(!filled) {
-				$('<span>É necessário preencher todos os valores.</span>').modalForm({ title:'Oops...' });
-				return false;
-			}
-		}
-		return true;
-	};
-
 	popup.ok(unbindEvents);     // after user clicks OK
 	popup.cancel(unbindEvents); // after user clicks Cancel
 
 	popup.ready(function() { // right before form appears
 		var xhr = $.post('ajaxService.php', { serviceId:nodeObj.data.serviceid }); // get service data
-		xhr.error(function(response) {
+		xhr.fail(function(response) {
 			$('<span>Erro na consulta do serviço.<br/>' +
 				response.status + ': ' + response.statusText + '<br/>' +
 				response.responseText + '</span>'
 			).modalForm({ title:'Oops...' }).ok(function() { popup.abort(); });
 		});
-		xhr.success(function(data) { // we got service data, now put 'em in the fields
+		xhr.done(function(data) { // we got service data, now put 'em in the fields
 			div.find('a#lnkDeleteService').on('click', events.lnkDeleteService); // setup events
 			div.find('a#lnkNewChildService').on('click', events.lnkCreateChildService);
 			div.find('a#lnkChangeParent').on('click', events.lnkChangeParentService);
@@ -199,12 +183,27 @@ function ShowEditService(nodeObj, rootServiceName) {
 			div.find('input[name=showSla]').on('change', events.chkToggleSla);
 			div.find('input[name=setdef]').on('click', events.btnSetDefaults);
 			data.children = nodeObj.children;
-			fillFields(data); // object with tons of info of the service
+			FillFields(data); // object with tons of info of the service
 		});
 	});
 
 	popup.validateSubmit(function() {
-		if(validateFields()) {
+		function ValidateFields() {
+			if(div.find('input[name=name]').val() == '') {
+				$('<span>É necessário dar um nome ao serviço.</span>').modalForm({ title:'Oops...' });
+				return false;
+			}
+			for(var i = 0; i < props.length; ++i) {
+				var filled = div.find('input[name=w' + props[i] + ']').val() != ''
+					&& div.find('input[name=t' + props[i] + ']').val() != '';
+				if(!filled) {
+					$('<span>É necessário preencher todos os valores.</span>').modalForm({ title:'Oops...' });
+					return false;
+				}
+			}
+			return true;
+		}
+		if(ValidateFields()) {
 			unbindEvents();
 			var retNode = { // build return object
 				id: nodeObj.data.serviceid,

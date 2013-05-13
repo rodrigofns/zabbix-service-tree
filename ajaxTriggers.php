@@ -1,6 +1,6 @@
 <?php
 session_start();
-require('../include/Connection.class.php');
+require('inc/Connection.class.php');
 
 // Preliminar setup.
 {
@@ -28,7 +28,7 @@ if($_POST['r'] == 'nodes') {
 }
 else if($_POST['r'] == 'groups') {
 	// --- list of host groups -------------------------------------------------
-	processAndSendRpc('hostgroup.get', array(
+	ProcessAndSendRpc('hostgroup.get', array(
 		'nodeids' => $_POST['node'], // filter by distributed node
 		'selectHosts' => 'count',
 		'real_hosts' => true,
@@ -39,7 +39,7 @@ else if($_POST['r'] == 'hosts') {
 	// --- list of hosts -------------------------------------------------------
 	if(!isset($_POST['group']))
 		Connection::HttpError(400, 'Hosts request; no group ID specified.');
-	processAndSendRpc('host.get', array(
+	ProcessAndSendRpc('host.get', array(
 		'output' => 'extend',
 		'groupids' => $_POST['group'] // filter by group ID
 	));
@@ -48,7 +48,7 @@ else if($_POST['r'] == 'triggers') {
 	// --- list of host triggers -----------------------------------------------
 	if(!isset($_POST['host']))
 		Connection::HttpError(400, 'Triggers request; no host ID specified.');
-	processAndSendRpc('trigger.get', array(
+	ProcessAndSendRpc('trigger.get', array(
 		'expandDescription' => true,
 		'output' => 'extend',
 		'hostids' => $_POST['host'] // filter by host ID
@@ -56,13 +56,13 @@ else if($_POST['r'] == 'triggers') {
 }
 
 // Hard-work RPC functions.
-function processAndSendRpc($method, $params) {
+function ProcessAndSendRpc($method, $params) {
 	$zabbix = Connection::GetZabbixApi($_SESSION['hash']);
-	$res = processRpc($zabbix, $method, $params);
+	$res = ProcessRpc($zabbix, $method, $params);
 	header('Content-Type: application/json');
 	echo json_encode($res); // directly output JSON content
 }
-function processRpc($zabbix, $method, $params) {
+function ProcessRpc($zabbix, $method, $params) {
 	try {
 		return $zabbix->pedir($method, $params);
 	} catch(Exception $e) {

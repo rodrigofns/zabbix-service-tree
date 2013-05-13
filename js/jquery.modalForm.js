@@ -15,12 +15,12 @@ var globalOpts = {
 	background: '#FFF',
 	bottomLine: '1px solid #E4E4E4', // horizontal line above the buttons
 	borderRadius: 0,
-	shadow: '3px 3px 28px #000',
-	titleBackground: '#DDD', // background CCS property for the titlebar, if a titlebar is shown
+	shadow: '3px 3px 28px #333',
+	titleBackground: '#E2E2E2', // background CCS property for the titlebar, if a titlebar is shown
 	titleColor: '', // color CSS property for the titlebar
 	titleIcon: '', // URL of a small image to be placed at left side of titlebar
 	coverColor: '#000',
-	coverOpacity: 0.57,
+	coverOpacity: 0.42,
 	closeOnEsc: true,
 	closeOnOutsideClick: true, // click on the cover div which hides the page below the popup
 	disableF5: true // page may still be reloaded, but the F5 key will be disabled when a popup is active
@@ -78,7 +78,7 @@ $.fn.modalForm = function modalForm(options) {
 			'-moz-box-shadow:' + globalOpts.shadow + ';' +
 			'border-radius:' + globalOpts.borderRadius + ';' +
 			'-moz-border-radius:' + globalOpts.borderRadius + ';' +
-			'padding:3px;' +
+			//'padding:3px;' +
 			'z-index:' + (90001 + iStack * 2) + ';' + // 1st div is 90001; 2nd div is 90003; and so on
 		'">' +
 		(userOpts.title != '' ? // titlebar, if any

@@ -42,13 +42,13 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 			if(nodeid == 0) return;
 
 			var xhr = $.post('ajaxTriggers.php', { r:'groups', node:nodeid }); // get groups list
-			xhr.error(function(response) {
+			xhr.fail(function(response) {
 				$('<span>Erro na consulta dos grupos de host.<br/>' +
 					response.status + ': ' + response.statusText + '<br/>' +
 					response.responseText + '</span>'
 				).modalForm({ title:'Oops...' });
 			});
-			xhr.success(function(data) {
+			xhr.done(function(data) {
 				// Fill combo with host groups belonging to the chosen distributed node.
 				cmbGroup.append('<option value="0">-- selecione --</option>');
 				for(var i = 0; i < data.length; ++i)
@@ -68,13 +68,13 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 			}
 
 			var xhr = $.post('ajaxTriggers.php', { r:'hosts', group:groupid }); // get hosts list
-			xhr.error(function(response) {
+			xhr.fail(function(response) {
 				$('<span>Erro na consulta dos hosts.<br/>' +
 					response.status + ': ' + response.statusText + '<br/>' +
 					response.responseText + '</span>'
 				).modalForm({ title:'Oops...' });
 			});
-			xhr.success(function(data) {
+			xhr.done(function(data) {
 				// Fill combo with hosts belonging to the chosen host group.
 				cmbHost.append('<option value="0">-- selecione --</option>');
 				for(var i = 0; i < data.length; ++i)
@@ -93,13 +93,13 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 			}
 
 			var xhr = $.post('ajaxTriggers.php', { r:'triggers', host:hostid }); // get triggers list
-			xhr.error(function(response) {
+			xhr.fail(function(response) {
 				$('<span>Erro na consulta das triggers.<br/>' +
 					response.status + ': ' + response.statusText + '<br/>' +
 					response.responseText + '<span>'
 				).modalForm({ title:'Oops...' });
 			});
-			xhr.success(function(data) {
+			xhr.done(function(data) {
 				// Fill combo with triggers belonging to the chosen host.
 				cmbTrigger.append('<option value="0">-- selecione --</option>');
 				for(var i = 0; i < data.length; ++i)
@@ -121,7 +121,7 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 
 	popup.ready(function() {
 		var xhr = $.post('ajaxTriggers.php', { r:'nodes' });
-		xhr.error(function(response) {
+		xhr.fail(function(response) {
 			$('<span>Erro na consulta das triggers.<br/>' +
 				response.status + ': ' + response.statusText + '<br/>' +
 				response.responseText + '</span>'
@@ -129,7 +129,7 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 				popup.abort();
 			});
 		});
-		xhr.success(function(data) {
+		xhr.done(function(data) {
 			cmbNode.on('change', events.nodeChanged); // setup events
 			cmbGroup.on('change', events.groupChanged);
 			cmbHost.on('change', events.hostChanged);

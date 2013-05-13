@@ -1,8 +1,8 @@
 <?php
 session_start();
-require('include/Connection.class.php');
-require('include/ServiceTree.class.php');
-require('include/StatusColor.class.php');
+require('inc/Connection.class.php');
+require('inc/ServiceTree.class.php');
+require('inc/StatusColor.class.php');
 
 if(isset($_REQUEST['root']))
 {
