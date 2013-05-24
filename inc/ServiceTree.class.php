@@ -80,9 +80,7 @@ class ServiceTree
 				LEFT JOIN items ON items.itemid = f.itemid
 				LEFT JOIN hosts h ON h.hostid = items.hostid
 			LEFT JOIN services_links sl ON sl.serviceupid = s.serviceid
-				LEFT JOIN service_showtree sst ON sst.idservice = sl.servicedownid
-			WHERE (sst.showtree IS NULL OR sst.showtree = 1)
-				AND s.serviceid = :serviceId
+			WHERE s.serviceid = :serviceId
 		');
 		$stmt->bindParam(':serviceId', $serviceId);
 		if(!$stmt->execute()) {
