@@ -18,26 +18,26 @@ class Install
 
 DROP TABLE IF EXISTS service_alert;
 CREATE TABLE service_alert (
-	idservice BIGINT(20) UNSIGNED NOT NULL,
-	status    INT(10)    UNSIGNED NOT NULL,
-	idaction  BIGINT(20) UNSIGNED NOT NULL,
+	idservice BIGINT UNSIGNED NOT NULL,
+	status    INT    UNSIGNED NOT NULL,
+	idaction  BIGINT UNSIGNED NOT NULL,
 	PRIMARY KEY (idservice)
 );
 DROP TABLE IF EXISTS service_icon;
 CREATE TABLE service_icon (
-	idservice BIGINT(20) UNSIGNED NOT NULL,
-	idicon    BIGINT(20) UNSIGNED NOT NULL,
+	idservice BIGINT UNSIGNED NOT NULL,
+	idicon    BIGINT UNSIGNED NOT NULL,
 	PRIMARY KEY (idservice)
 );
 DROP TABLE IF EXISTS service_showtree;
 CREATE TABLE service_showtree (
-	idservice BIGINT(20) UNSIGNED NOT NULL,
-	showtree  BIGINT(20) UNSIGNED NOT NULL,
+	idservice BIGINT UNSIGNED NOT NULL,
+	showtree  BIGINT UNSIGNED NOT NULL,
 	PRIMARY KEY (idservice)
 );
 DROP TABLE IF EXISTS service_threshold;
 CREATE TABLE service_threshold (
-	idservice             BIGINT(20) UNSIGNED NOT NULL,
+	idservice             BIGINT UNSIGNED NOT NULL,
 	threshold_normal      DOUBLE PRECISION DEFAULT NULL,
 	threshold_information DOUBLE PRECISION DEFAULT NULL,
 	threshold_alert       DOUBLE PRECISION DEFAULT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE service_threshold (
 );
 DROP TABLE IF EXISTS service_weight;
 CREATE TABLE service_weight (
-	idservice          BIGINT(20) UNSIGNED NOT NULL,
+	idservice          BIGINT UNSIGNED NOT NULL,
 	weight_normal      DOUBLE PRECISION DEFAULT NULL,
 	weight_information DOUBLE PRECISION DEFAULT NULL,
 	weight_alert       DOUBLE PRECISION DEFAULT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE service_weight (
 /* This table is not used anywhere, and the auto_increment column is MySQL only; so we left it out.
 DROP TABLE IF EXISTS service_map;
 CREATE TABLE service_map (
-	idservicemap BIGINT(20)  UNSIGNED NOT NULL auto_increment,
+	idservicemap BIGINT  UNSIGNED NOT NULL auto_increment,
 	name         VARCHAR(64) NOT NULL,
 	mapa         BLOB        NOT NULL,
 	PRIMARY KEY (idservicemap),
