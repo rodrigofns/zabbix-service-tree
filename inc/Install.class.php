@@ -38,23 +38,23 @@ CREATE TABLE service_showtree (
 DROP TABLE IF EXISTS service_threshold;
 CREATE TABLE service_threshold (
 	idservice             BIGINT UNSIGNED NOT NULL,
-	threshold_normal      DOUBLE PRECISION DEFAULT NULL,
-	threshold_information DOUBLE PRECISION DEFAULT NULL,
-	threshold_alert       DOUBLE PRECISION DEFAULT NULL,
-	threshold_average     DOUBLE PRECISION DEFAULT NULL,
-	threshold_major       DOUBLE PRECISION DEFAULT NULL,
-	threshold_critical    DOUBLE PRECISION DEFAULT NULL,
+	threshold_normal      DOUBLE PRECISION DEFAULT 0,
+	threshold_information DOUBLE PRECISION DEFAULT 1,
+	threshold_alert       DOUBLE PRECISION DEFAULT 10,
+	threshold_average     DOUBLE PRECISION DEFAULT 100,
+	threshold_major       DOUBLE PRECISION DEFAULT 1000,
+	threshold_critical    DOUBLE PRECISION DEFAULT 10000,
 	PRIMARY KEY (idservice)
 );
 DROP TABLE IF EXISTS service_weight;
 CREATE TABLE service_weight (
 	idservice          BIGINT UNSIGNED NOT NULL,
-	weight_normal      DOUBLE PRECISION DEFAULT NULL,
-	weight_information DOUBLE PRECISION DEFAULT NULL,
-	weight_alert       DOUBLE PRECISION DEFAULT NULL,
-	weight_average     DOUBLE PRECISION DEFAULT NULL,
-	weight_major       DOUBLE PRECISION DEFAULT NULL,
-	weight_critical    DOUBLE PRECISION DEFAULT NULL,
+	weight_normal      DOUBLE PRECISION DEFAULT 0,
+	weight_information DOUBLE PRECISION DEFAULT 1,
+	weight_alert       DOUBLE PRECISION DEFAULT 10,
+	weight_average     DOUBLE PRECISION DEFAULT 100,
+	weight_major       DOUBLE PRECISION DEFAULT 1000,
+	weight_critical    DOUBLE PRECISION DEFAULT 10000,
 	PRIMARY KEY (idservice)
 );
 
