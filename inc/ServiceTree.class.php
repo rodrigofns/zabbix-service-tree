@@ -68,9 +68,9 @@ class ServiceTree
 		// Each array position will hold how many services are in that state (0 to 5).
 
 		// Warning: highly optimized query, think twice before modify.
-		$stmt = $dbh->prepare('
+		$stmt = $dbh->prepare("
 			SELECT s.serviceid, s.name, s.triggerid, s.status,
-				REPLACE(t.description, "{HOSTNAME}", h.host) AS triggerdesc,
+				REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
 				i.imageid, sl.servicedownid
 			FROM services s
 			LEFT JOIN service_icon si ON si.idservice = s.serviceid
@@ -81,7 +81,7 @@ class ServiceTree
 				LEFT JOIN hosts h ON h.hostid = items.hostid
 			LEFT JOIN services_links sl ON sl.serviceupid = s.serviceid
 			WHERE s.serviceid = :serviceId
-		');
+		");
 		$stmt->bindParam(':serviceId', $serviceId);
 		if(!$stmt->execute()) {
 			$err = $stmt->errorInfo();
@@ -124,9 +124,9 @@ class ServiceTree
 	public static function GetInfo($dbh, $serviceId)
 	{
 		// Warning: highly optimized query, think twice before modify.
-		$stmt = $dbh->prepare('
+		$stmt = $dbh->prepare("
 			SELECT s.*, st.*, sw.*,
-				REPLACE(t.description, "{HOSTNAME}", h.host) AS triggerdesc,
+				REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
 				s2.serviceid AS parentserviceid, s2.name AS parentname
 			FROM services s
 			LEFT JOIN service_threshold st ON st.idservice = s.serviceid
@@ -138,7 +138,7 @@ class ServiceTree
 				LEFT JOIN items ON items.itemid = f.itemid
 				LEFT JOIN hosts h ON h.hostid = items.hostid
 			WHERE s.serviceid = :serviceId
-		');
+		");
 		$stmt->bindParam(':serviceId', $serviceId);
 		if(!$stmt->execute()) {
 			$err = $stmt->errorInfo();
