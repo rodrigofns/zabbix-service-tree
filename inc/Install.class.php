@@ -85,13 +85,9 @@ CREATE TABLE service_map (
 	 */
 	private static function _TableExists($dbh, $tableName)
 	{
-		$ress = $dbh->query("SHOW TABLES LIKE '$tableName'");
-		if(!$ress) {
-			$err = $dbh->errorInfo();
-			Connection::HttpError(500, "Failed to check if table exists.<br/>$err[0] $err[2]");
-		}
-		$tableFound = false;
-		while($row = $ress->fetch(PDO::FETCH_NUM)) $tableFound = true;
-		return $tableFound;
+		$stmt = $dbh->prepare('SELECT 1 FROM '.$tableName);
+		if(!$stmt->execute())
+			return false;
+		return $stmt->fetch(PDO::FETCH_NUM) != false;
 	}
 }
