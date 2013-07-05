@@ -43,8 +43,8 @@ class Connection
 	public static function GetDatabase()
 	{
 		$dbConf = self::_LoadZabbixConf();
-		$pdoStr = sprintf('%s:host=%s;dbname=%s',
-			strtolower($dbConf['TYPE']), $dbConf['SERVER'], $dbConf['DATABASE']);
+		$dsnPrefix = ($dbConf['TYPE'] === 'POSTGRESQL') ? 'pgsql' : strtolower($dbConf['TYPE']);
+		$pdoStr = sprintf('%s:host=%s;dbname=%s', $dsnPrefix, $dbConf['SERVER'], $dbConf['DATABASE']);
 		try {
 			$dbh = new PDO($pdoStr, $dbConf['USER'], $dbConf['PASSWORD']);
 			$dbh->exec('SET NAMES utf8');
