@@ -95,7 +95,7 @@ class ServiceTree
 					'text'    => (strlen($row['name']) > 16 ? substr($row['name'], 0, 16).'...' : $row['name']),
 					'tooltip' => "$row[name]\nFilhos: %d\nTrigger: $row[triggerdesc]",
 					'color'   => StatusColor::$VALUES[ (int)$row['status'] ],
-					'image'   => Connection::BaseUrl().'inc/image.php?id='.$row['imageid'],
+					'image'   => ($row['imageid'] === null) ? null : Connection::BaseUrl().'inc/image.php?id='.$row['imageid'],
 					'data'    => array( // this "data" section is free-form and will be preserved across tree
 						'serviceid'   => $row['serviceid'],
 						'fullname'    => $row['name'],
