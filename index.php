@@ -26,7 +26,7 @@
 		.numStatus { border:1px solid #CCC; padding:0px 4px; }
 		#statusTxt { font-size:8pt; }
 	</style>
-	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
 	<script type="text/javascript" src="js/jquery.modalForm.js"></script>
 	<script type="text/javascript" src="js/TreeGraph.js"></script>
