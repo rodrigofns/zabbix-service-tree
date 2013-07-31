@@ -1,0 +1,112 @@
+OK
+Cancelar
+Oops...
+Você não está logado ou sua sessão expirou.
+
+# index.js
+Erro ao trazer o menu de login
+Erro ao trazer a lista de serviços
+Deseja encerrar a sessão do usuário atual?
+Não foi possível efetuar logoff
+É necessário efetuar login para editar um serviço
+Sem acesso
+Erro ao salvar a árvore de serviço
+Erro ao trazer a árvore de serviço
+
+# index.php
+Árvore de Serviços de TI
+ÁRVORE DE SERVIÇOS DE TI
+Última atualização em
+Atualização
+Tempo de atualização da árvore, em minutos
+min
+Serviço
+Serviço de TI a ser carregado
+selecione
+nós
+Recolhe todos os nós da árvore
+recolher tudo
+
+# ajaxLogin.php
+Login no Zabbix falhou para o usuário %s.
+Sem parâmetros... o que você está tentando fazer?
+
+# ajaxLoginMenu.php
+Login no Zabbix para edição da árvore
+Efetuar login
+Você está logado
+Efetuar logoff
+Logoff
+
+# ajaxService.php
+Erro ao atualizar o servico com id=%s.<br/>%s
+Nenhuma requisição de carregar/salvar... o que você está tentando fazer?
+Erro na checagem de linha em %s.<br/>%s %s
+Erro em
+
+# ajaxServiceTree.php
+Árvore de serviço: nenhum parâmetro, nada a consultar
+
+# ajaxTriggers.php
+Requisição não especificada (grupos/hosts/triggers).
+Erro na consulta dos nós.
+Requisição de hosts; nenhum ID de grupo especificado.
+Requisição de triggers; nenhum ID de host especificado.
+
+# dialogChooseTrigger.php
+Atual
+Nó
+Grupo
+Host
+Trigger
+Escolher trigger
+Erro na consulta dos grupos de host
+Erro na consulta dos hosts
+Erro na consulta das triggers
+Erro na consulta dos nós
+Nenhuma trigger selecionada
+A trigger selecionada é a mesma trigger<br/>já atrelada ao serviço.
+
+# dialogEditService.php
+Nome
+Serviço pai
+Trocar o serviço pai deste serviço
+trocar
+Algoritmo
+Problema, se pelo menos um filho tem problema
+Problema, se todos os filhos têm problema
+Não calcular
+SLA aceitável
+Calcular SLA?
+Escolher uma trigger para este serviço
+escolher
+Severidade
+Peso
+Limiar
+Normal
+Informação
+Aviso
+Médio
+Alto
+Desastre
+valores default
+Preencher os campos com os valores default
+Outras ações
+Remover este serviço da árvore
+deletar este serviço
+Criar um novo serviço filho deste
+criar novo filho
+não é nó-folha, sem trigger
+Editar serviço
+Remover serviço
+Novo filho
+Erro na consulta do serviço
+É necessário dar um nome ao serviço
+É necessário preencher todos os valores
+
+# dialogLogin.php
+Usuário
+Senha
+Login
+É necessário informar o nome de usuário
+Oops... não foi possível efetuar login

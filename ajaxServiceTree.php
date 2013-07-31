@@ -4,6 +4,10 @@ require('inc/Connection.class.php');
 require('inc/ServiceTree.class.php');
 require('inc/StatusColor.class.php');
 
+require_once('__conf.php');
+require_once('i18n/i18n.php');
+i18n_set_map('en', $LANG, false);
+
 if(isset($_REQUEST['root']))
 {
 	// List of root service names.
@@ -32,5 +36,5 @@ else if( (isset($_REQUEST['serviceId']) && $_REQUEST['serviceId'] != '') ||
 }
 else
 {
-	Connection::HttpError(400, 'Service tree: no parameters, nothing to query.');
+	Connection::HttpError(400, I('Service tree: no parameters, nothing to query.'));
 }

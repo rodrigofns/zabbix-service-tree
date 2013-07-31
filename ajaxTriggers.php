@@ -2,15 +2,19 @@
 session_start();
 require('inc/Connection.class.php');
 
+require_once('__conf.php');
+require_once('i18n/i18n.php');
+i18n_set_map('en', $LANG, false);
+
 // Preliminar setup.
 {
 	// Validate authenticated client.
 	if(!isset($_SESSION['user']))
-		Connection::HttpError(401, 'You are not logged in, or your session expired.');
+		Connection::HttpError(401, I('You are not logged in, or your session expired.'));
 
 	// Validate request type.
 	if(!isset($_POST['r']))
-		Connection::HttpError(400, 'Request not specified (groups/hosts/triggers).');
+		Connection::HttpError(400, I('Request not specified (groups/hosts/triggers).'));
 }
 
 // Process requests.
@@ -19,7 +23,7 @@ if($_POST['r'] == 'nodes') {
 	$dbh = Connection::GetDatabase();
 	$stmt = $dbh->prepare('SELECT nodeid, name, ip, port FROM nodes');
 	if(!$stmt->execute())
-		Connection::HttpError(500, 'Failed to query nodes.');
+		Connection::HttpError(500, I('Failed to query nodes.'));
 	$out = array();
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC))
 		$out[] = array('nodeid' => $row['nodeid'], 'name' => "$row[name] ($row[ip]:$row[port])");
@@ -38,7 +42,7 @@ else if($_POST['r'] == 'groups') {
 else if($_POST['r'] == 'hosts') {
 	// --- list of hosts -------------------------------------------------------
 	if(!isset($_POST['group']))
-		Connection::HttpError(400, 'Hosts request; no group ID specified.');
+		Connection::HttpError(400, I('Hosts request; no group ID specified.'));
 	ProcessAndSendRpc('host.get', array(
 		'output' => 'extend',
 		'groupids' => $_POST['group'] // filter by group ID
@@ -47,7 +51,7 @@ else if($_POST['r'] == 'hosts') {
 else if($_POST['r'] == 'triggers') {
 	// --- list of host triggers -----------------------------------------------
 	if(!isset($_POST['host']))
-		Connection::HttpError(400, 'Triggers request; no host ID specified.');
+		Connection::HttpError(400, I('Triggers request; no host ID specified.'));
 	ProcessAndSendRpc('trigger.get', array(
 		'expandDescription' => true,
 		'output' => 'extend',

@@ -7,7 +7,7 @@ require('inc/ServiceTree.class.php');
 {
 	// Validate authenticated client.
 	if(!isset($_SESSION['user']))
-		Connection::HttpError(401, 'You are not logged in, or your session expired.');
+		Connection::HttpError(401, I('You are not logged in, or your session expired.'));
 
 	// Establish database connection.
 	$dbh = Connection::GetDatabase();
@@ -64,7 +64,8 @@ if(isset($_POST['save']))
 	$stmt->bindParam(':serviceid', $data->id);
 	if(!$stmt->execute()) {
 		$err = $stmt->errorInfo();
-		Connection::HttpError(500, "Failed to update service with id={$data->id}.<br/>$err[2]");
+		Connection::HttpError(500,
+			sprintf(I('Failed to update service with id=%s.<br/>%s'), $data->id, $err[2]) );
 	}
 
 	header('Content-Type: application/json');
@@ -80,7 +81,7 @@ else
 {
 	// --- No request? ---------------------------------------------------------
 	Connection::HttpError(400,
-		'No retrieve/save service request... what are you trying to do?');
+		I('No retrieve/save service request... what are you trying to do?'));
 }
 
 
@@ -90,7 +91,8 @@ function UpdateOrInsert($dbh, $tableName, $idPair, $valuePairs)
 	$stmt = $dbh->prepare("SELECT 1 FROM $tableName WHERE {$idPair[0]} = {$idPair[1]}"); // row exists?
 	if(!$stmt->execute()) {
 		$err = $stmt->errorInfo();
-		Connection::HttpError(500, "Failed to check row in $tableName.<br/>$err[0] $err[2]");
+		Connection::HttpError(500,
+			sprintf(I('Failed to check row in %s.<br/>%s %s'), $tableName, $err[0], $err[2]) );
 	}
 	$rowFound = false;
 	while($row = $stmt->fetch(PDO::FETCH_NUM)) $rowFound = true;
@@ -115,8 +117,8 @@ function UpdateOrInsert($dbh, $tableName, $idPair, $valuePairs)
 	$stmt = $dbh->prepare($sql); // finally run the query
 	if(!$stmt->execute()) {
 		$err = $stmt->errorInfo();
-		Connection::HttpError(500, 'Failed to '.
+		Connection::HttpError(500, I('Failed to').' '.
 			($rowFound ? 'UPDATE' : 'INSERT').
-			" $tableName with {$idPair[0]}={$idPair[1]}.<br/>$err[0] $err[2]");
+			" $tableName -> {$idPair[0]}={$idPair[1]}.<br/>$err[0] $err[2]");
 	}
 }

@@ -12,58 +12,58 @@
 	<div id="serviceEditWnd">
 		<input type="hidden" name="rootServiceName" value=""/>
 		<table>
-		<tr><td>Nome</td><td><input type="text" size="30" name="name"/></td></tr>
-		<!--tr><td>Serviço pai</td>
+		<tr><td><?=I('Name')?></td><td><input type="text" size="30" name="name"/></td></tr>
+		<!--tr><td><?=I('Parent service')?></td>
 			<td><input type="text" size="30" name="parentServiceName" readonly="readonly"/>
 				<input type="hidden" name="parentServiceId" value=""/>
-				<a href="#" id="lnkChangeParent" title="Trocar o serviço pai deste serviço">trocar...</a></td></tr-->
-		<tr><td>Algoritmo</td>
+				<a href="#" id="lnkChangeParent" title="<?=I('Change parent service of this service')?>"><?=I('change')?>...</a></td></tr-->
+		<tr><td><?=I('Algorithm')?></td>
 			<td><select name="algorithm">
-				<option value="1">Problema, se pelo menos um filho tem problema</option>
-				<option value="2">Problema, se todos os filhos têm problema</option>
-				<option value="0">Não calcular</option>
+				<option value="1"><?=I('Problem, if at least one child has a problem')?></option>
+				<option value="2"><?=I('Problem, if all children have problems')?></option>
+				<option value="0"><?=I('Do not calculate')?></option>
 				</select></td></tr>
-		<tr><td>SLA aceitável</td>
+		<tr><td><?=I('Acceptable SLA')?></td>
 			<td><input type="text" size="8" name="goodSla"/>
-				<label><input type="checkbox" name="showSla"/>Calcular?</label></td></tr>
+				<label><input type="checkbox" name="showSla"/><?=I('Calculate SLA?')?></label></td></tr>
 		<tr><td>Trigger</td>
 			<td><input type="hidden" name="triggerId" value=""/>
 				<input type="text" size="28" name="triggerTxt" readonly="readonly"/>
-				<a href="#" id="lnkChooseTrigger" title="Escolher uma trigger para este serviço">escolher...</a></td></tr>
+				<a href="#" id="lnkChooseTrigger" title="<?=I('Choose a trigger to this service')?>"><?=I('choose')?>...</a></td></tr>
 		</table>
 		<hr/>
 
 		<div style="float:left;">
 			<table>
-			<tr><th>Severidade</th><th>Peso</th><th>Limiar</th></tr>
-			<tr><td>Normal</td>
+			<tr><th><?=I('Severity')?></th><th><?=I('Weight')?></th><th><?=I('Threshold')?></th></tr>
+			<tr><td><?=I('Normal')?></td>
 				<td><input type="text" size="5" name="wnormal"/></td><!-- weight -->
 				<td><input type="text" size="5" name="tnormal"/></td></tr><!-- threshold -->
-			<tr><td>Informação</td>
+			<tr><td><?=I('Information')?></td>
 				<td><input type="text" size="5" name="winformation"/></td>
 				<td><input type="text" size="5" name="tinformation"/></td></tr>
-			<tr><td>Alerta</td>
+			<tr><td><?=I('Warning')?></td>
 				<td><input type="text" size="5" name="walert"/></td>
 				<td><input type="text" size="5" name="talert"/></td></tr>
-			<tr><td>Média</td>
+			<tr><td><?=I('Average')?></td>
 				<td><input type="text" size="5" name="waverage"/></td>
 				<td><input type="text" size="5" name="taverage"/></td></tr>
-			<tr><td>Alta</td>
+			<tr><td><?=I('High')?></td>
 				<td><input type="text" size="5" name="wmajor"/></td>
 				<td><input type="text" size="5" name="tmajor"/></td></tr>
-			<tr><td>Desastre</td>
+			<tr><td><?=I('Disaster')?></td>
 				<td><input type="text" size="5" name="wcritical"/></td>
 				<td><input type="text" size="5" name="tcritical"/></td></tr>
 			</table>
 		</div>
 		<div>&nbsp;<br/>
-			&nbsp; &nbsp; &nbsp; <input type="button" name="setdef" value="valores default"
-				title="Preencher os campos com os valores default"/>
+			&nbsp; &nbsp; &nbsp; <input type="button" name="setdef" value="<?=I('default values')?>"
+				title="<?=I('Set default values to all fields')?>"/>
 		</div>
 		<!--<hr/>
-		Outras ações:<br/>
-		<a href="#" id="lnkDeleteService" title="Remover este serviço da árvore">deletar este serviço</a> |
-		<a href="#" id="lnkNewChildService" title="Criar um novo serviço filho deste">criar um novo filho</a>
+		<?=I('Other actions')?>:<br/>
+		<a href="#" id="lnkDeleteService" title="<?=I('Remove this service from tree')?>"><?=I('delete this service')?></a> |
+		<a href="#" id="lnkNewChildService" title="<?=I('Create a new child service of current one')?>"><?=I('create new child')?></a>
 		<br/>&nbsp;-->
 	</div>
 </div>
@@ -91,13 +91,13 @@ function ShowEditService(nodeObj, rootServiceName) {
 			div.find('a#lnkChooseTrigger').show();
 		} else { // a non-leaf node
 			div.find('input[name=triggerId]').val('');
-			div.find('input[name=triggerTxt]').val(y ? '(não é nó-folha, sem trigger)' : '');
+			div.find('input[name=triggerTxt]').val(y ? '('+I('not a leaf node, no trigger')+')' : '');
 			div.find('a#lnkChooseTrigger').hide();
 		}
 
 		for(var i = 0; i < props.length; ++i) {
-			div.find('input[name=w' + props[i] + ']').val(y ? serviceObj.weight[props[i]] : '');
-			div.find('input[name=t' + props[i] + ']').val(y ? serviceObj.threshold[props[i]] : '');
+			div.find('input[name=w'+props[i]+']').val(y ? serviceObj.weight[props[i]] : '');
+			div.find('input[name=t'+props[i]+']').val(y ? serviceObj.threshold[props[i]] : '');
 		}
 	}
 
@@ -106,16 +106,16 @@ function ShowEditService(nodeObj, rootServiceName) {
 
 	// Displaying the form.
 
-	var popup = div.modalForm({ hasCancel:true, title:'Editar serviço' });
+	var popup = div.modalForm({ hasCancel:true, title:I('Edit service') });
 
 	var events = {
 		lnkDeleteService: function(ev) {
-			$('<span>Remover serviço...</span>').modalForm({ event:ev });
+			$('<span>'+I('Remove service')+'...</span>').modalForm({ event:ev });
 			return false;
 		},
 
 		lnkCreateChildService: function(ev) {
-			$('<span>Novo filho...</span>').modalForm({ event:ev });
+			$('<span>'+I('New child')+'...</span>').modalForm({ event:ev });
 			return false;
 		},
 
@@ -149,8 +149,8 @@ function ShowEditService(nodeObj, rootServiceName) {
 
 		btnSetDefaults: function(ev) {
 			for(var i = 0; i < props.length; ++i) {
-				div.find('input[name=w' + props[i] + ']').val(i == 0 ? 0 : Math.pow(10, i - 1));
-				div.find('input[name=t' + props[i] + ']').val(i == 0 ? 0 : Math.pow(10, i - 1));
+				div.find('input[name=w'+props[i]+']').val(i == 0 ? 0 : Math.pow(10, i - 1));
+				div.find('input[name=t'+props[i]+']').val(i == 0 ? 0 : Math.pow(10, i - 1));
 			}
 		}
 	};
@@ -170,10 +170,10 @@ function ShowEditService(nodeObj, rootServiceName) {
 	popup.ready(function() { // right before form appears
 		var xhr = $.post('ajaxService.php', { serviceId:nodeObj.data.serviceid }); // get service data
 		xhr.fail(function(response) {
-			$('<span>Erro na consulta do serviço.<br/>' +
-				response.status + ': ' + response.statusText + '<br/>' +
-				response.responseText + '</span>'
-			).modalForm({ title:'Oops...' }).ok(function() { popup.abort(); });
+			$('<span>'+I('Failed to query service')+'.<br/>' +
+				response.status+': '+response.statusText+'<br/>' +
+				response.responseText+'</span>'
+			).modalForm({ title:I('Oops...') }).ok(function() { popup.abort(); });
 		});
 		xhr.done(function(data) { // we got service data, now put 'em in the fields
 			div.find('a#lnkDeleteService').on('click', events.lnkDeleteService); // setup events
@@ -190,14 +190,14 @@ function ShowEditService(nodeObj, rootServiceName) {
 	popup.validateSubmit(function() {
 		function ValidateFields() {
 			if(div.find('input[name=name]').val() == '') {
-				$('<span>É necessário dar um nome ao serviço.</span>').modalForm({ title:'Oops...' });
+				$('<span>'+I('The service must have a name')+'.</span>').modalForm({ title:I('Oops...') });
 				return false;
 			}
 			for(var i = 0; i < props.length; ++i) {
-				var filled = div.find('input[name=w' + props[i] + ']').val() != ''
-					&& div.find('input[name=t' + props[i] + ']').val() != '';
+				var filled = div.find('input[name=w'+props[i]+']').val() != ''
+					&& div.find('input[name=t'+props[i]+']').val() != '';
 				if(!filled) {
-					$('<span>É necessário preencher todos os valores.</span>').modalForm({ title:'Oops...' });
+					$('<span>'+I('All values must be filled in')+'.</span>').modalForm({ title:I('Oops...') });
 					return false;
 				}
 			}
@@ -216,8 +216,8 @@ function ShowEditService(nodeObj, rootServiceName) {
 			};
 			if(retNode.triggerid == '') retNode.triggerid = null;
 			for(var i = 0; i < props.length; ++i) {
-				retNode['weight_' + props[i]] = div.find('input[name=w' + props[i] + ']').val(),
-				retNode['threshold_' + props[i]] = div.find('input[name=t' + props[i] + ']').val()
+				retNode['weight_'+props[i]] = div.find('input[name=w'+props[i]+']').val(),
+				retNode['threshold_'+props[i]] = div.find('input[name=t'+props[i]+']').val()
 			}
 			popup.continueSubmit(retNode); // ok() event will receive a node object
 		}

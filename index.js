@@ -2,7 +2,8 @@
 
 $(document).ready(function() {
 	$.modalForm({ // global settings for modal popups
-		labelCancel: 'Cancelar',
+		labelOk: I('OK'),
+		labelCancel: I('Cancel'),
 		titleIcon: 'img/zabbix16.png',
 		titleColor: '#444',
 		disableF5: true
@@ -29,10 +30,10 @@ $(document).ready(function() {
 function LoadLoginMenu() {
 	var xhr = $.post('ajaxLoginMenu.php');
 	xhr.fail(function(response) { // should be pretty rare...
-		$('<span>Erro ao trazer o menu de login.<br/>' +
-			response.status + ': ' + response.statusText + '<br/>' +
-			response.responseText + '</span>'
-		).modalForm({ title:'Oops...' });
+		$('<span>'+I('Failed to load login menu')+'.<br/>' +
+			response.status+': '+response.statusText+'<br/>' +
+			response.responseText+'</span>'
+		).modalForm({ title:I('Oops...') });
 	});
 	xhr.done(function(html) {
 		$('#loginMenu').html(html);
@@ -42,15 +43,15 @@ function LoadLoginMenu() {
 function LoadServicesCombo() {
 	var xhr = $.post('ajaxServiceTree.php', { root:1 });
 	xhr.fail(function(response) {
-		$('<span>Erro ao trazer a lista de serviços.<br/>' +
-			response.status + ': ' + response.statusText + '<br/>' +
-			response.responseText + '</span>'
-		).modalForm({ title:'Oops...' });
+		$('<span>'+I('Failed to load services list')+'.<br/>' +
+			response.status+': '+response.statusText+'<br/>' +
+			response.responseText+'</span>'
+		).modalForm({ title:I('Oops...') });
 	});
 	xhr.done(function(json) {
 		var options = '';
 		for(var i = 0; i < json.length; ++i)
-			options += '<option value="' + json[i] + '">' + json[i] + '</option>';
+			options += '<option value="'+json[i]+'">'+json[i]+'</option>';
 		$('select#serviceName').append(options); // loads combo with available services
 	});
 }
@@ -66,15 +67,15 @@ function OnLoginClick(ev) {
 }
 
 function OnLogoffClick(ev) {
-	var dlgLogoff = $('<span>Deseja encerrar a sessão do usuário <b>' + $('span#userName').text() + '</b>?</span>')
+	var dlgLogoff = $('<span>'+I('Terminate session for current user?')+'</span>')
 		.modalForm({ hasCancel:true, event:ev, title:'Logoff' });
 	dlgLogoff.validateSubmit(function() {
 		var xhr = $.post('ajaxLogin.php', { logoff:true });
 		xhr.fail(function(response) { // logoff failed (should be pretty rare...)
-			$('<span>Não foi possível efetuar logoff.<br/>' +
-				response.status + ': ' + response.statusText + '<br/>' +
-				response.responseText + '</span>'
-			).modalForm({ title:'Oops...' }).ok(function() { dlgLogoff.abort(); });
+			$('<span>'+I('Failed to log off')+'.<br/>' +
+				response.status+': '+response.statusText+'<br/>' +
+				response.responseText+'</span>'
+			).modalForm({ title:I('Oops...') }).ok(function() { dlgLogoff.abort(); });
 		});
 		xhr.done(function(data) {
 			dlgLogoff.continueSubmit();
@@ -90,8 +91,8 @@ function OnLogoffClick(ev) {
 
 function NodeCtrlClick(timerObj, treeObj, nodeObj) {
 	if($('#userName').length == 0) {
-		$('<span>É necessário efetuar login para editar um serviço.</span>')
-			.modalForm({ title:'Sem acesso' });
+		$('<span>'+I('You must be logged in to edit a service')+'.</span>')
+			.modalForm({ title:I('No access') });
 	} else {
 		if(timerObj.id !== null) {
 			clearTimeout(timerObj.id); // stop any pending execution
@@ -102,10 +103,10 @@ function NodeCtrlClick(timerObj, treeObj, nodeObj) {
 		dlgEditService.ok(function(retNode) {
 			var xhr = $.post('ajaxService.php', { save:1, data:retNode });
 			xhr.fail(function(response) {
-				$('<span>Erro ao salvar a árvore de serviço.<br/>' +
-					response.status + ': ' + response.statusText + '<br/>' +
-					response.responseText + '</span>'
-				).modalForm({ title:'Oops...' });
+				$('<span>'+I('Failed to save the service tree')+'.<br/>' +
+					response.status+': '+response.statusText+'<br/>' +
+					response.responseText+'</span>'
+				).modalForm({ title:I('Oops...') });
 			});
 			xhr.done(function(data) {
 				RefreshTree(timerObj, treeObj);
@@ -126,16 +127,16 @@ function RefreshTree(timerObj, treeObj) {
 		clearTimeout(timerObj.id); // stop any pending execution
 	(function ReloadTreeData() {
 		$('#treePlot').hide();
-		$('#toolbox').hide().css({ bottom:($(document).height() / 2 + 10) + 'px' }); // prepare toolbox to animate
+		$('#toolbox').hide().css({ bottom:($(document).height() / 2 + 10)+'px' }); // prepare toolbox to animate
 		$('select#refreshTime, select#serviceName').attr('disabled', 'disabled');
 		$('#treeLoading').show().css({ top:0 }).animate({ top:'50%' }, 400, function() { // loading GIF comes up
 			var xhr = $.post('ajaxServiceTree.php', { serviceName:$('select#serviceName').val() });
 			xhr.fail(function(response) {
 				$('#treePlot').show();
-				$('<span>Erro ao trazer a árvore de serviço.<br/>' +
-					response.status + ': ' + response.statusText + '<br/>' +
-					response.responseText + '</span>'
-				).modalForm({ title:'Oops...' });
+				$('<span>'+I('Failed to load the service tree')+'.<br/>' +
+					response.status+': '+response.statusText+'<br/>' +
+					response.responseText+'</span>'
+				).modalForm({ title:I('Oops...') });
 			});
 			xhr.done(function(data) {
 				treeObj.clear();

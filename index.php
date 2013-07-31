@@ -1,4 +1,5 @@
 <?php
+	require_once('__conf.php');
 	require_once('inc/Install.class.php');
 	require_once('inc/StatusColor.class.php');
 	session_start();
@@ -10,7 +11,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
-	<title>Árvore de Serviços de TI</title>
+	<? require_once('i18n/i18n.php'); i18n_set_map('en', $LANG); ?>
 	<style type="text/css">
 		html,body { height:100%; margin:0; overflow:hidden; }
 		body,table,input,select { font:10pt Arial; color:#181818; }
@@ -26,6 +27,7 @@
 		.numStatus { border:1px solid #CCC; padding:0px 4px; }
 		#statusTxt { font-size:8pt; }
 	</style>
+	<title><?=I('IT Services Tree')?></title>
 	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
 	<script type="text/javascript" src="js/jquery.modalForm.js"></script>
@@ -37,25 +39,25 @@
 		<canvas id="treePlot"></canvas>
 		<img id="treeLoading" src="img/loadingbig.gif"/>
 	</div>
-	<div id="topLeftOne">ÁRVORE DE SERVIÇOS DE TI<br/>
-		<span id="statusTxt">Última atualização em <span id="lastUpdate">yyyy-MM-dd HH:mm:ss</span>.</div>
+	<div id="topLeftOne"><?=I('IT SERVICES TREE')?><br/>
+		<span id="statusTxt"><?=I('Last updated in')?> <span id="lastUpdate">yyyy-MM-dd HH:mm:ss</span>.</div>
 	<div id="topRiteOne">
-		Atualização <select id="refreshTime" title="Tempo de atualização da árvore, em segundos">
-			<option value="60">1 min</option>
-			<option value="120">2 min</option>
-			<option value="180">3 min</option>
-			<option value="300">5 min</option>
+		<?=I('Refresh')?> <select id="refreshTime" title="<?=I('Tree refresh time, in seconds')?>">
+			<option value="60">1 <?=I('min')?></option>
+			<option value="120">2 <?=I('min')?></option>
+			<option value="180">3 <?=I('min')?></option>
+			<option value="300">5 <?=I('min')?></option>
 			</select> &nbsp;
-		Serviço <select id="serviceName" title="Serviço de TI a ser exibido na árvore">
-			<option class="" value="">--- selecione ---</option>
+		<?=I('Service')?> <select id="serviceName" title="<?=I('IT service to be loaded')?>">
+			<option class="" value="">--- <?=I('choose')?> ---</option>
 			</select> &nbsp;
 		<span id="loginMenu"></span>
 	</div>
-	<div id="toolbox"><span id="numNodes">0</span> nós
+	<div id="toolbox"><span id="numNodes">0</span> <?=I('nodes')?>
 		<? for($i = 0; $i <= count(StatusColor::$VALUES); ++$i) { ?>
 		<span class="numStatus" id="numStatus<?=$i?>" style="background:<?=StatusColor::$VALUES[$i]?>;">0</span>
 		<? } ?>
-		<a id="collapse" href="#" title="Recolhe todos os nós da árvore">recolher tudo</a></span>
+		<a id="collapse" href="#" title="<?=I('Collapse all tree nodes')?>"><?=I('collapse all')?></a></span>
 	</div>
 	<? include('dialogLogin.php'); ?>
 	<? include('dialogEditService.php'); ?>

@@ -10,11 +10,11 @@
 	</style>
 	<div id="chooseTriggerWnd">
 		<table>
-		<tr><td>Atual</td><td><input name="curTriggerName" size="28" readonly="readonly"/></td></tr>
-		<tr><td>Nó</td><td><select name="node"></select></td></tr>
-		<tr><td>Grupo</td><td><select name="group"></select></td></tr>
-		<tr><td>Host</td><td><select name="host"></select></td></tr>
-		<tr><td>Trigger</td><td><select name="trigger"></select></td></tr>
+		<tr><td><?=I('Current')?></td><td><input name="curTriggerName" size="28" readonly="readonly"/></td></tr>
+		<tr><td><?=I('Node')?></td><td><select name="node"></select></td></tr>
+		<tr><td><?=I('Group')?></td><td><select name="group"></select></td></tr>
+		<tr><td><?=I('Host')?></td><td><select name="host"></select></td></tr>
+		<tr><td><?=I('Trigger')?></td><td><select name="trigger"></select></td></tr>
 		</table>
 	</div>
 </div>
@@ -28,10 +28,10 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 		cmbTrigger = div.find('select[name=trigger]');
 
 	div.find('select').html(''); // empty combos
-	div.find('select[name=node]').html('<option value="0">-- selecione --</option>');
+	div.find('select[name=node]').html('<option value="0">-- '+I('choose')+' --</option>');
 	div.find('input[name=curTriggerName]').val(curTriggerName); // display purposes only
 
-	var popup = div.modalForm({ hasCancel:true, title:'Escolher trigger' });
+	var popup = div.modalForm({ hasCancel:true, title:I('Choose trigger') });
 
 	var events = {
 		nodeChanged: function() {
@@ -43,16 +43,16 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 
 			var xhr = $.post('ajaxTriggers.php', { r:'groups', node:nodeid }); // get groups list
 			xhr.fail(function(response) {
-				$('<span>Erro na consulta dos grupos de host.<br/>' +
-					response.status + ': ' + response.statusText + '<br/>' +
-					response.responseText + '</span>'
-				).modalForm({ title:'Oops...' });
+				$('<span>'+I('Failed to query host groups')+'.<br/>' +
+					response.status+': '+response.statusText+'<br/>' +
+					response.responseText+'</span>'
+				).modalForm({ title:I('Oops...') });
 			});
 			xhr.done(function(data) {
 				// Fill combo with host groups belonging to the chosen distributed node.
-				cmbGroup.append('<option value="0">-- selecione --</option>');
+				cmbGroup.append('<option value="0">-- '+I('choose')+' --</option>');
 				for(var i = 0; i < data.length; ++i)
-					cmbGroup.append('<option value="' + data[i].groupid + '">' + data[i].name + '</option>');
+					cmbGroup.append('<option value="'+data[i].groupid+'">'+data[i].name+'</option>');
 				popup.centerOnPage();
 				cmbGroup.focus();
 			});
@@ -69,16 +69,16 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 
 			var xhr = $.post('ajaxTriggers.php', { r:'hosts', group:groupid }); // get hosts list
 			xhr.fail(function(response) {
-				$('<span>Erro na consulta dos hosts.<br/>' +
-					response.status + ': ' + response.statusText + '<br/>' +
-					response.responseText + '</span>'
-				).modalForm({ title:'Oops...' });
+				$('<span>'+I('Failed to query hosts')+'.<br/>' +
+					response.status+': '+response.statusText+'<br/>' +
+					response.responseText+'</span>'
+				).modalForm({ title:I('Oops...') });
 			});
 			xhr.done(function(data) {
 				// Fill combo with hosts belonging to the chosen host group.
-				cmbHost.append('<option value="0">-- selecione --</option>');
+				cmbHost.append('<option value="0">-- '+I('choose')+' --</option>');
 				for(var i = 0; i < data.length; ++i)
-					cmbHost.append('<option value="' + data[i].hostid + '">' + data[i].name + '</option>');
+					cmbHost.append('<option value="'+data[i].hostid+'">'+data[i].name+'</option>');
 				popup.centerOnPage();
 				cmbHost.focus();
 			});
@@ -94,16 +94,16 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 
 			var xhr = $.post('ajaxTriggers.php', { r:'triggers', host:hostid }); // get triggers list
 			xhr.fail(function(response) {
-				$('<span>Erro na consulta das triggers.<br/>' +
-					response.status + ': ' + response.statusText + '<br/>' +
-					response.responseText + '<span>'
-				).modalForm({ title:'Oops...' });
+				$('<span>'+I('Failed to query triggers')+'.<br/>' +
+					response.status+': '+response.statusText+'<br/>' +
+					response.responseText+'</span>'
+				).modalForm({ title:I('Oops...') });
 			});
 			xhr.done(function(data) {
 				// Fill combo with triggers belonging to the chosen host.
-				cmbTrigger.append('<option value="0">-- selecione --</option>');
+				cmbTrigger.append('<option value="0">-- '+I('choose')+' --</option>');
 				for(var i = 0; i < data.length; ++i)
-					cmbTrigger.append('<option value="' + data[i].triggerid + '">' + data[i].description + '</option>');
+					cmbTrigger.append('<option value="'+data[i].triggerid+'">'+data[i].description+'</option>');
 				popup.centerOnPage();
 				cmbTrigger.focus();
 			});
@@ -122,10 +122,10 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 	popup.ready(function() {
 		var xhr = $.post('ajaxTriggers.php', { r:'nodes' });
 		xhr.fail(function(response) {
-			$('<span>Erro na consulta das triggers.<br/>' +
-				response.status + ': ' + response.statusText + '<br/>' +
-				response.responseText + '</span>'
-			).modalForm({ title:'Oops...' }).ok(function() {
+			$('<span>'+I('Failed to query nodes')+'.<br/>' +
+				response.status+': '+response.statusText+'<br/>' +
+				response.responseText+'</span>'
+			).modalForm({ title:I('Oops...') }).ok(function() {
 				popup.abort();
 			});
 		});
@@ -136,7 +136,7 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 
 			for(var i = 0; i < data.length; ++i) { // fill combo with distributed nodes
 				div.find('select[name=node]').append(
-					'<option value="' + data[i].nodeid + '">' + data[i].name + '</option>');
+					'<option value="'+data[i].nodeid+'">'+data[i].name+'</option>');
 			}
 			popup.centerOnPage();
 		});
@@ -145,11 +145,11 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 	popup.validateSubmit(function() {
 		var triggerid = div.find('select[name=trigger]').val();
 		if(triggerid === null || triggerid == 0) {
-			$('<span>Nenhuma trigger selecionada.</span>')
-				.modalForm({ title:'Oops...' });
+			$('<span>'+I('No trigger currently selected')+'.</span>')
+				.modalForm({ title:I('Oops...') });
 		} else if(triggerid == curTriggerId) {
-			$('<span>A trigger selecionada é a mesma trigger<br/>já atrelada ao serviço.</span>')
-				.modalForm({ title:'Oops...' });
+			$('<span>'+I('The selected trigger is already<br/>set to this service.')+'</span>')
+				.modalForm({ title:I('Oops...') });
 		} else {
 			unbindEvents();
 			popup.continueSubmit({ // build return trigger object for ok() event

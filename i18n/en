@@ -1,0 +1,112 @@
+OK
+Cancel
+Oops...
+You are not logged in, or your session expired.
+
+# index.js
+Failed to load login menu
+Failed to load services list
+Terminate session for current user?
+Failed to log off
+You must be logged in to edit a service
+No access
+Failed to save the service tree
+Failed to load the service tree
+
+# index.php
+IT Services Tree
+IT SERVICES TREE
+Last updated in
+Refresh
+Tree refresh time, in minutes
+min
+Service
+IT service to be loaded
+choose
+nodes
+Collapse all tree nodes
+collapse all
+
+# ajaxLogin.php
+Zabbix login failed for user %s.
+No parameters... what do you want to do?
+
+# ajaxLoginMenu.php
+Log into Zabbix to edit the tree
+Log in
+You are logged in
+Log off application
+Log off
+
+# ajaxService.php
+Failed to update service with id=%s.<br/>%s
+No retrieve/save service request... what are you trying to do?
+Failed to check row in %s.<br/>%s %s
+Failed to
+
+# ajaxServiceTree.php
+Service tree: no parameters, nothing to query
+
+# ajaxTriggers.php
+Request not specified (groups/hosts/triggers).
+Failed to query nodes.
+Hosts request; no group ID specified.
+Triggers request; no host ID specified.
+
+# dialogChooseTrigger.php
+Current
+Node
+Group
+Host
+Trigger
+Choose trigger
+Failed to query host groups
+Failed to query hosts
+Failed to query triggers
+Failed to query nodes
+No trigger currently selected
+The selected trigger is already<br/>set to this service.
+
+# dialogEditService.php
+Name
+Parent service
+Change parent service of this service
+change
+Algorithm
+Problem, if at least one child has a problem
+Problem, if all children have problems
+Do not calculate
+Acceptable SLA
+Calculate SLA?
+Choose a trigger to this service
+choose
+Severity
+Weight
+Threshold
+Normal
+Information
+Warning
+Average
+High
+Disaster
+default values
+Set default values to all fields
+Other actions
+Remove this service from tree
+delete this service
+Create a new child service of current one
+create new child
+not a leaf node, no trigger
+Edit service
+Remove service
+New child
+Failed to query service
+The service must have a name
+All values must be filled in
+
+# dialogLogin.php
+Username
+Password
+Login
+You must inform the user name
+Oops... login attempt has failed
