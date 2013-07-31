@@ -110,3 +110,16 @@ Password
 Login
 You must inform the user name
 Oops... login attempt has failed
+
+# inc/Install.class.php
+The 5 additional tables will be created in Zabbix database.
+Failed to init transaction for tables creation.
+Failed to commit tables creation.
+Failed to create tables.
+
+# inc/ServiceTree.class.php
+Failed to query service list.
+Failed to query service ID for "%s".
+Could not find service "%s".
+Failed to query service for "%s".
+Children

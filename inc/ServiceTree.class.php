@@ -1,6 +1,10 @@
 <?php
 require_once('Connection.class.php');
 
+require_once('__conf.php');
+require_once('i18n/i18n.php');
+i18n_set_map('en', $LANG, false);
+
 /**
  * Builds the Zabbix service tree.
  */
@@ -25,7 +29,7 @@ class ServiceTree
 		');
 		if(!$stmt->execute()) {
 			$err = $stmt->errorInfo();
-			Connection::HttpError(500, "Failed to query service list.<br/>$err[0] $err[2]");
+			Connection::HttpError(500, I('Failed to query service list')."<br/>$err[0] $err[2]");
 		}
 
 		$ret = array();
@@ -46,11 +50,11 @@ class ServiceTree
 		$stmt->bindParam(':serviceName', $name, PDO::PARAM_STR);
 		if(!$stmt->execute()) {
 			$err = $stmt->errorInfo();
-			Connection::HttpError(500, "Failed to query service ID for '$name'.<br/>$err[0] $err[2]");
+			Connection::HttpError(500, sprintf(I('Failed to query service ID for "%s".'), $name)."<br/>$err[0] $err[2]");
 		}
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		if($row === false)
-			Connection::HttpError(400, "Could not find service '$name'.");
+			Connection::HttpError(400, sprintf(I('Could not find service "%s".'), $name));
 		return $row['serviceid'];
 	}
 
@@ -85,7 +89,7 @@ class ServiceTree
 		$stmt->bindParam(':serviceId', $serviceId);
 		if(!$stmt->execute()) {
 			$err = $stmt->errorInfo();
-			Connection::HttpError(500, "Failed to query service for '$serviceId'.<br/>$err[0] $err[2]");
+			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId)."<br/>$err[0] $err[2]");
 		}
 
 		$ret = array();
@@ -93,7 +97,7 @@ class ServiceTree
 			if(!count($ret)) { // will happen only once
 				$ret = array( // this data structure matches the HTML5 tree
 					'text'    => (strlen($row['name']) > 16 ? substr($row['name'], 0, 16).'...' : $row['name']),
-					'tooltip' => "$row[name]\nFilhos: %d\nTrigger: $row[triggerdesc]",
+					'tooltip' => $row['name']."\n".I('Children').": %d\n".I('Trigger').': '.$row['triggerdesc'],
 					'color'   => StatusColor::$VALUES[ (int)$row['status'] ],
 					'image'   => ($row['imageid'] === null) ? null : Connection::BaseUrl().'inc/image.php?id='.$row['imageid'],
 					'data'    => array( // this "data" section is free-form and will be preserved across tree
@@ -142,7 +146,7 @@ class ServiceTree
 		$stmt->bindParam(':serviceId', $serviceId);
 		if(!$stmt->execute()) {
 			$err = $stmt->errorInfo();
-			Connection::HttpError(500, "Failed to query service $serviceId.<br/>$err[0] $err[2]");
+			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId)."<br/>$err[0] $err[2]");
 		}
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC); // just 1 service with the ID

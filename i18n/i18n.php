@@ -16,9 +16,9 @@ function I($text) { // global i18n function for PHP
 
 /**
  * Sets up the i18n configuration.
- * @param $srcLang    string Name of the source file, with the keys which go in the I() calls.
- * @param $destLang   string File with the replacement strings.
- * @param $generateJs bool   Pass true if the PHP page has JavaScript strings to translate.
+ * @param string $srcLang    Name of the source file, with the keys which go in the I() calls.
+ * @param string $destLang   File with the replacement strings.
+ * @param bool   $generateJs Pass true if the PHP page has JavaScript strings to translate.
  */
 function i18n_set_map($srcLang, $destLang=null, $generateJs=true) {
 	// Note: if same string appears twice in source
@@ -40,7 +40,10 @@ function i18n_set_map($srcLang, $destLang=null, $generateJs=true) {
 
 	?><script>
 	var i18n_data = []; // global i18n dictionary for JS
-	<? foreach($i18n_data as $key => $val) { echo 'i18n_data["'.$key.'"]="'.$val.'";'; } ?>
+	<? foreach($i18n_data as $key => $val) {
+		printf('i18n_data["%s"]="%s";',
+			str_replace('"', '\"', $key), str_replace('"', '\"', $val) );
+	} ?>
 	function I(text) { // global i18n function for JS
 		return i18n_data[text];
 	}

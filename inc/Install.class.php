@@ -1,6 +1,10 @@
 <?php
 require_once('Connection.class.php');
 
+require_once('__conf.php');
+require_once('i18n/i18n.php');
+i18n_set_map('en', $LANG, false);
+
 /**
  * Internal routines used on the application installation.
  */
@@ -13,12 +17,12 @@ class Install
 	{
 		$dbh = Connection::GetDatabase();
 		if(!self::_TableExists($dbh, 'service_threshold')) {
-			error_log('The 5 additional tables will be created in Zabbix database.', 0);
+			error_log(I('The 5 additional tables will be created in Zabbix database.'), 0);
 			$bigint = ($dbh->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') ? 'BIGINT' : 'BIGINT UNSIGNED';
 			$int = ($dbh->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') ? 'INTEGER' : 'INT UNSIGNED';
 			try {
 				if(!$dbh->beginTransaction())
-					self::_TellDbError($dbh, 'Failed to init transaction for tables creation.');
+					self::_TellDbError($dbh, I('Failed to init transaction for tables creation.'));
 				$dbh->exec('DROP TABLE IF EXISTS service_alert');
 				$dbh->exec("CREATE TABLE service_alert (
 					idservice $bigint NOT NULL,
@@ -61,10 +65,10 @@ class Install
 					PRIMARY KEY (idservice)
 				)");
 				if(!$dbh->commit())
-					self::_TellDbError($dbh, 'Failed to commit tables creation.');
+					self::_TellDbError($dbh, I('Failed to commit tables creation.'));
 			} catch(Exception $e) {
 				$dbh->rollback();
-				Connection::HttpError(500, 'Failed to create tables.<br/>'.$e->getMessage());
+				Connection::HttpError(500, I('Failed to create tables.').'<br/>'.$e->getMessage());
 			}
 		}
 	}

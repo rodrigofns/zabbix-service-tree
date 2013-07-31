@@ -110,3 +110,16 @@ Senha
 Login
 É necessário informar o nome de usuário
 Oops... não foi possível efetuar login
+
+# inc/Install.class.php
+As 5 tabelas adicionais serão criadas no banco do Zabbix.
+Erro ao iniciar a transação para criação das tabelas.
+Erro no commit da criação das tabelas.
+Erro ao criar as tabelas.
+
+# inc/ServiceTree.class.php
+Erro ao consultar a lista de serviços.
+Erro ao consultar o ID do serviço "%s".
+O serviço "%s" não foi encontrado.
+Erro ao consultar o serviço para "%s".
+Filhos
