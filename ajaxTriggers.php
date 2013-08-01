@@ -27,17 +27,34 @@ if($_POST['r'] == 'nodes') {
 	$out = array();
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC))
 		$out[] = array('nodeid' => $row['nodeid'], 'name' => "$row[name] ($row[ip]:$row[port])");
+
+	$count = count($out);
+        if (!$count) 
+                $out[] = array('nodeid' => '0', 'name' => "Local"); 
+
 	header('Content-Type: application/json');
 	echo json_encode($out);
 }
 else if($_POST['r'] == 'groups') {
+        
+	$node = $_POST['node'];
+        if ($node == "0")
+         {
+         ProcessAndSendRpc('hostgroup.get', array(
+ 		'selectHosts' => 'count',
+ 		'real_hosts' => true,
+ 		'output' => 'extend'
+ 	));
+         }
+         else {
 	// --- list of host groups -------------------------------------------------
 	ProcessAndSendRpc('hostgroup.get', array(
-		'nodeids' => $_POST['node'], // filter by distributed node
+		'nodeids' => $node, // filter by distributed node
 		'selectHosts' => 'count',
 		'real_hosts' => true,
 		'output' => 'extend'
 	));
+       }
 }
 else if($_POST['r'] == 'hosts') {
 	// --- list of hosts -------------------------------------------------------

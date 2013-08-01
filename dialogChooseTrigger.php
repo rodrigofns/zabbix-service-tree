@@ -39,7 +39,7 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 			cmbHost.html('');
 			cmbTrigger.html('');
 			var nodeid = cmbNode.val(); // ID of selected node
-			if(nodeid == 0) return;
+//			if(nodeid == 0) return;
 
 			var xhr = $.post('ajaxTriggers.php', { r:'groups', node:nodeid }); // get groups list
 			xhr.fail(function(response) {
