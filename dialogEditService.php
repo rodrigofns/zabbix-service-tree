@@ -42,16 +42,16 @@
 			<tr><td><?=I('Information')?></td>
 				<td><input type="text" size="5" name="winformation"/></td>
 				<td><input type="text" size="5" name="tinformation"/></td></tr>
-			<tr><td><?=I('Warning')?></td>
+			<tr><td><?=I('Alert')?></td>
 				<td><input type="text" size="5" name="walert"/></td>
 				<td><input type="text" size="5" name="talert"/></td></tr>
 			<tr><td><?=I('Average')?></td>
 				<td><input type="text" size="5" name="waverage"/></td>
 				<td><input type="text" size="5" name="taverage"/></td></tr>
-			<tr><td><?=I('High')?></td>
+			<tr><td><?=I('Major')?></td>
 				<td><input type="text" size="5" name="wmajor"/></td>
 				<td><input type="text" size="5" name="tmajor"/></td></tr>
-			<tr><td><?=I('Disaster')?></td>
+			<tr><td><?=I('Critical')?></td>
 				<td><input type="text" size="5" name="wcritical"/></td>
 				<td><input type="text" size="5" name="tcritical"/></td></tr>
 			</table>

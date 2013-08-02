@@ -86,10 +86,10 @@ Weight
 Threshold
 Normal
 Information
-Warning
+Alert
 Average
-High
-Disaster
+Major
+Critical
 default values
 Set default values to all fields
 Other actions
