@@ -51,7 +51,7 @@ function LoadServicesCombo() {
 	xhr.done(function(json) {
 		var options = '';
 		for(var i = 0; i < json.length; ++i)
-			options += '<option value="'+json[i]+'">'+json[i]+'</option>';
+			options += '<option value="'+json[i].name+'">'+json[i].name+'</option>';
 		$('select#serviceName').append(options); // loads combo with available services
 	});
 }

@@ -15,27 +15,23 @@ class ServiceTree
 	 * @param  PDO   $dbh Database connection handle.
 	 * @return array      Services list.
 	 */
-	public static function GetRootList($dbh)
+	public static function GetRootList(PDO $dbh)
 	{
-		$stmt = $dbh->prepare('
-			SELECT DISTINCT(name) as name
-			FROM services s
-			INNER JOIN services_links sl ON sl.serviceupid = s.serviceid
-			WHERE NOT EXISTS (
-				SELECT *
-				FROM services_links sl2
-				WHERE sl2.servicedownid = s.serviceid
-			)
-		');
-		if(!$stmt->execute()) {
-			$err = $stmt->errorInfo();
-			Connection::HttpError(500, I('Failed to query service list')."<br/>$err[0] $err[2]");
+		try {
+			$stmt = Connection::QueryDatabase($dbh, '
+				SELECT DISTINCT(name) as name
+				FROM services s
+				INNER JOIN services_links sl ON sl.serviceupid = s.serviceid
+				WHERE NOT EXISTS (
+					SELECT *
+					FROM services_links sl2
+					WHERE sl2.servicedownid = s.serviceid
+				)
+			');
+		} catch(Exception $e) {
+			Connection::HttpError(500, I('Failed to query service list').'<br/>'.$e->getMessage());
 		}
-
-		$ret = array();
-		while($row = $stmt->fetch(PDO::FETCH_ASSOC))
-			$ret[] = $row['name'];
-		return $ret;
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -44,13 +40,14 @@ class ServiceTree
 	 * @param  string $name Name of the service to be queried.
 	 * @return string       ID of service (a big int really).
 	 */
-	public static function GetIdByName($dbh, $name)
+	public static function GetIdByName(PDO $dbh, $name)
 	{
-		$stmt = $dbh->prepare('SELECT serviceid FROM services WHERE name = :serviceName');
-		$stmt->bindParam(':serviceName', $name, PDO::PARAM_STR);
-		if(!$stmt->execute()) {
-			$err = $stmt->errorInfo();
-			Connection::HttpError(500, sprintf(I('Failed to query service ID for "%s".'), $name)."<br/>$err[0] $err[2]");
+		try {
+			$stmt = Connection::QueryDatabase($dbh,
+				'SELECT serviceid FROM services WHERE name = ?', $name);
+		} catch(Exception $e) {
+			Connection::HttpError(500, sprintf(I('Failed to query service ID for "%s".'), $name).
+				'<br/>'.$e->getMessage());
 		}
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		if($row === false)
@@ -65,31 +62,31 @@ class ServiceTree
 	 * @param  array& $statusCount Array to count services on each status (0-5).
 	 * @return array               Associative array specifically formatted to HTML5 needs.
 	 */
-	public static function GetAllToHtml5($dbh, $serviceId, &$statusCount)
+	public static function GetAllToHtml5(PDO $dbh, $serviceId, &$statusCount)
 	{
 		// Example of $statusCount array:
 		// $statusCount = array(0, 0, 0, 0, 0, 0);
 		// Each array position will hold how many services are in that state (0 to 5).
 
 		// Warning: highly optimized query, think twice before modify.
-		$stmt = $dbh->prepare("
-			SELECT s.serviceid, s.name, s.triggerid, s.status,
-				REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
-				i.imageid, sl.servicedownid
-			FROM services s
-			LEFT JOIN service_icon si ON si.idservice = s.serviceid
-				LEFT JOIN images i ON i.imageid = si.idicon
-			LEFT JOIN triggers t ON t.triggerid = s.triggerid
-				LEFT JOIN functions f ON f.triggerid = t.triggerid
-				LEFT JOIN items ON items.itemid = f.itemid
-				LEFT JOIN hosts h ON h.hostid = items.hostid
-			LEFT JOIN services_links sl ON sl.serviceupid = s.serviceid
-			WHERE s.serviceid = :serviceId
-		");
-		$stmt->bindParam(':serviceId', $serviceId);
-		if(!$stmt->execute()) {
-			$err = $stmt->errorInfo();
-			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId)."<br/>$err[0] $err[2]");
+		try {
+			$stmt = Connection::QueryDatabase($dbh, "
+				SELECT s.serviceid, s.name, s.triggerid, s.status,
+					REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
+					i.imageid, sl.servicedownid
+				FROM services s
+				LEFT JOIN service_icon si ON si.idservice = s.serviceid
+					LEFT JOIN images i ON i.imageid = si.idicon
+				LEFT JOIN triggers t ON t.triggerid = s.triggerid
+					LEFT JOIN functions f ON f.triggerid = t.triggerid
+					LEFT JOIN items ON items.itemid = f.itemid
+					LEFT JOIN hosts h ON h.hostid = items.hostid
+				LEFT JOIN services_links sl ON sl.serviceupid = s.serviceid
+				WHERE s.serviceid = ?
+			", $serviceId);
+		} catch(Exception $e) {
+			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId).
+				'<br/>'.$e->getMessage());
 		}
 
 		$ret = array();
@@ -125,28 +122,28 @@ class ServiceTree
 	 * @param  string $serviceId ID of service to be processed.
 	 * @return array             Node information.
 	 */
-	public static function GetInfo($dbh, $serviceId)
+	public static function GetInfo(PDO $dbh, $serviceId)
 	{
 		// Warning: highly optimized query, think twice before modify.
-		$stmt = $dbh->prepare("
-			SELECT s.*, st.*, sw.*,
-				REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
-				s2.serviceid AS parentserviceid, s2.name AS parentname
-			FROM services s
-			LEFT JOIN service_threshold st ON st.idservice = s.serviceid
-			LEFT JOIN service_weight sw ON sw.idservice = s.serviceid
-			LEFT JOIN services_links sl ON sl.servicedownid = s.serviceid
-				LEFT JOIN services s2 ON s2.serviceid = sl.serviceupid
-			LEFT JOIN triggers t ON t.triggerid = s.triggerid
-				LEFT JOIN functions f ON f.triggerid = t.triggerid
-				LEFT JOIN items ON items.itemid = f.itemid
-				LEFT JOIN hosts h ON h.hostid = items.hostid
-			WHERE s.serviceid = :serviceId
-		");
-		$stmt->bindParam(':serviceId', $serviceId);
-		if(!$stmt->execute()) {
-			$err = $stmt->errorInfo();
-			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId)."<br/>$err[0] $err[2]");
+		try {
+			$stmt = Connection::QueryDatabase($dbh, "
+				SELECT s.*, st.*, sw.*,
+					REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
+					s2.serviceid AS parentserviceid, s2.name AS parentname
+				FROM services s
+				LEFT JOIN service_threshold st ON st.idservice = s.serviceid
+				LEFT JOIN service_weight sw ON sw.idservice = s.serviceid
+				LEFT JOIN services_links sl ON sl.servicedownid = s.serviceid
+					LEFT JOIN services s2 ON s2.serviceid = sl.serviceupid
+				LEFT JOIN triggers t ON t.triggerid = s.triggerid
+					LEFT JOIN functions f ON f.triggerid = t.triggerid
+					LEFT JOIN items ON items.itemid = f.itemid
+					LEFT JOIN hosts h ON h.hostid = items.hostid
+				WHERE s.serviceid = ?
+			", $serviceId);
+		} catch(Exception $e) {
+			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId).
+				'<br/>'.$e->getMessage());
 		}
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC); // just 1 service with the ID
