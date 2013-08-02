@@ -18,75 +18,79 @@ i18n_set_map('en', $LANG, false);
 }
 
 // Process requests.
-if($_POST['r'] == 'nodes') {
-	// --- list of nodes -------------------------------------------------------
-	$dbh = Connection::GetDatabase();
-	$stmt = $dbh->prepare('SELECT nodeid, name, ip, port FROM nodes');
-	if(!$stmt->execute())
-		Connection::HttpError(500, I('Failed to query nodes.'));
+if($_POST['r'] == 'nodes')
+{
+	try {
+		$stmt = Connection::QueryDatabase(Connection::GetDatabase(), '
+			SELECT nodeid, name, ip, port
+			FROM nodes
+			ORDER BY name
+		');
+	} catch(Exception $e) {
+		Connection::HttpError(500, I('Failed to query nodes.').'<br/>'.$e->getMessage());
+	}
 	$out = array();
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC))
 		$out[] = array('nodeid' => $row['nodeid'], 'name' => "$row[name] ($row[ip]:$row[port])");
-
-	$count = count($out);
-        if (!$count) 
-                $out[] = array('nodeid' => '0', 'name' => "Local"); 
-
+	if(count($out) === 0)
+		$out[] = array('nodeid' => '0', 'name' => "Local");
 	header('Content-Type: application/json');
-	echo json_encode($out);
+	echo json_encode($out); // list of nodes
 }
-else if($_POST['r'] == 'groups') {
-        
-	$node = $_POST['node'];
-        if ($node == "0")
-         {
-         ProcessAndSendRpc('hostgroup.get', array(
- 		'selectHosts' => 'count',
- 		'real_hosts' => true,
- 		'output' => 'extend'
- 	));
-         }
-         else {
-	// --- list of host groups -------------------------------------------------
-	ProcessAndSendRpc('hostgroup.get', array(
-		'nodeids' => $node, // filter by distributed node
-		'selectHosts' => 'count',
-		'real_hosts' => true,
-		'output' => 'extend'
-	));
-       }
-}
-else if($_POST['r'] == 'hosts') {
-	// --- list of hosts -------------------------------------------------------
-	if(!isset($_POST['group']))
-		Connection::HttpError(400, I('Hosts request; no group ID specified.'));
-	ProcessAndSendRpc('host.get', array(
-		'output' => 'extend',
-		'groupids' => $_POST['group'] // filter by group ID
-	));
-}
-else if($_POST['r'] == 'triggers') {
-	// --- list of host triggers -----------------------------------------------
-	if(!isset($_POST['host']))
-		Connection::HttpError(400, I('Triggers request; no host ID specified.'));
-	ProcessAndSendRpc('trigger.get', array(
-		'expandDescription' => true,
-		'output' => 'extend',
-		'hostids' => $_POST['host'] // filter by host ID
-	));
-}
-
-// Hard-work RPC functions.
-function ProcessAndSendRpc($method, $params) {
-	$zabbix = Connection::GetZabbixApi($_SESSION['hash']);
-	$res = ProcessRpc($zabbix, $method, $params);
-	header('Content-Type: application/json');
-	echo json_encode($res); // directly output JSON content
-}
-function ProcessRpc($zabbix, $method, $params) {
+else if($_POST['r'] == 'groups')
+{
+	$nodeId = $_POST['node'];
+	$nodeFilter = ($nodeId == '0') ? '' : // filter by distributed node?
+		"WHERE groupid BETWEEN {$nodeId}00000000000000 AND {$nodeId}99999999999999";
 	try {
-		return $zabbix->pedir($method, $params);
+		$stmt = Connection::QueryDatabase(Connection::GetDatabase(), "
+			SELECT groupid, name
+			FROM groups
+			$nodeFilter
+			ORDER BY name
+		");
 	} catch(Exception $e) {
-		Connection::HttpError(500, $e->getMessage());
+		Connection::HttpError(500, sprintf(I('Failed to query groups for node %s.'), $nodeId).
+			'<br/>'.$e->getMessage());
 	}
+	$out = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	header('Content-Type: application/json');
+	echo json_encode($out); // list of host groups
+}
+else if($_POST['r'] == 'hosts')
+{
+	try {
+		$stmt = Connection::QueryDatabase(Connection::GetDatabase(), "
+			SELECT h.hostid, h.name
+			FROM hosts h
+			INNER JOIN hosts_groups hg ON hg.hostid = h.hostid
+			WHERE hg.groupid = $_POST[group]
+			ORDER BY h.name
+		");
+	} catch(Exception $e) {
+		Connection::HttpError(500, sprintf(I('Failed to query hosts for group %s.'), $_POST['group']).
+			'<br/>'.$e->getMessage());
+	}
+	$out = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	header('Content-Type: application/json');
+	echo json_encode($out); // list of hosts
+}
+else if($_POST['r'] == 'triggers')
+{
+	try {
+		$stmt = Connection::QueryDatabase(Connection::GetDatabase(), "
+			SELECT t.triggerid, REPLACE(t.description, '{HOSTNAME}', h.host) AS description
+			FROM triggers t
+			INNER JOIN functions f ON f.triggerid = t.triggerid
+			INNER JOIN items i ON i.itemid = f.itemid AND i.hostid = $_POST[host]
+			INNER JOIN hosts h ON h.hostid = i.hostid
+			ORDER BY description
+		");
+	} catch(Exception $e) {
+		Connection::HttpError(500, sprintf(I('Failed to query triggers host %s.'), $_POST['host']).
+			'<br/>'.$e->getMessage());
+	}
+	$out = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	header('Content-Type: application/json');
+	echo json_encode($out); // list of triggers
 }

@@ -38,8 +38,7 @@ function ShowChooseTrigger(curTriggerId, curTriggerName) {
 			cmbGroup.html(''); // empty combos
 			cmbHost.html('');
 			cmbTrigger.html('');
-			var nodeid = cmbNode.val(); // ID of selected node
-//			if(nodeid == 0) return;
+			var nodeid = cmbNode.val(); // ID of selected node, zero if no distributed nodes
 
 			var xhr = $.post('ajaxTriggers.php', { r:'groups', node:nodeid }); // get groups list
 			xhr.fail(function(response) {

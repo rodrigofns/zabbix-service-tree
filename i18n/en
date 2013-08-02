@@ -50,8 +50,9 @@ Service tree: no parameters, nothing to query
 # ajaxTriggers.php
 Request not specified (groups/hosts/triggers).
 Failed to query nodes.
-Hosts request; no group ID specified.
-Triggers request; no host ID specified.
+Failed to query groups for node %s.
+Failed to query hosts for group %s.
+Failed to query triggers host %s.
 
 # dialogChooseTrigger.php
 Current

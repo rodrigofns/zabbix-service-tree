@@ -50,8 +50,9 @@ Erro em
 # ajaxTriggers.php
 Requisição não especificada (grupos/hosts/triggers).
 Erro na consulta dos nós.
-Requisição de hosts; nenhum ID de grupo especificado.
-Requisição de triggers; nenhum ID de host especificado.
+Erro na consulta dos grupos para o nó %s.
+Erro na consulta dos hosts para o grupo %s.
+Erro na consulta das triggers para o host %s.
 
 # dialogChooseTrigger.php
 Atual

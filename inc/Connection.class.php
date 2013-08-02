@@ -55,6 +55,29 @@ class Connection
 	}
 
 	/**
+	 * Runs a sprintf-like SQL query.
+	 * @param PDO    $dbh Database connection handler.
+	 * @param string $sql SQL string with "?" marks to bindParam() calls.
+	 * @param mixed  ...  Variables to be replaced by bindParam().
+	 * @return PDOStatement
+	 * @throws Exception
+	 */
+	public function QueryDatabase(PDO $dbh, $sql)
+	{
+		// Usage example:
+		// $stmt = QueryDatabase($dbh, 'SELECT * FROM person WHERE id = ? AND age = ?', 1, 32);
+		$args = func_get_args();
+		$stmt = $dbh->prepare($args[1]);
+		for($i = 2; $i < count($args); ++$i)
+			$stmt->bindParam($i - 1, $args[$i]); // param index is one-based
+		if(!$stmt->execute()) {
+			$err = $stmt->errorInfo();
+			throw new Exception("SQL ERROR:\n{$stmt->queryString}\n$err[0] $err[2]");
+		}
+		return $stmt; // ready to call $stmt->fetch()
+	}
+
+	/**
 	 * Returns a Zabbix API RPC object, according to legacy config.ini file.
 	 * @param  string $hash Zabbix session hash.
 	 * @return Zabbix
