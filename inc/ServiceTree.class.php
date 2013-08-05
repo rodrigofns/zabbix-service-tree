@@ -89,7 +89,7 @@ class ServiceTree
 				'<br/>'.$e->getMessage());
 		}
 
-		$ret = array();
+		$ret = array(); // actually an associative array
 		while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			if(!count($ret)) { // will happen only once
 				$ret = array( // this data structure matches the HTML5 tree
@@ -97,7 +97,7 @@ class ServiceTree
 					'tooltip' => $row['name']."\n".I('Children').": %d\n".I('Trigger').': '.$row['triggerdesc'],
 					'color'   => StatusColor::$VALUES[ (int)$row['status'] ],
 					'image'   => ($row['imageid'] === null) ? null : Connection::BaseUrl().'inc/image.php?id='.$row['imageid'],
-					'data'    => array( // this "data" section is free-form and will be preserved across tree
+					'data'    => (object)array( // this "data" section is free-form and will be preserved across tree
 						'serviceid'   => $row['serviceid'],
 						'fullname'    => $row['name'],
 						'triggerid'   => $row['triggerid'],
@@ -108,8 +108,8 @@ class ServiceTree
 				++$statusCount[ (int)$row['status'] ]; // increment node counter at our state
 			}
 			$childService = self::GetAllToHtml5($dbh, $row['servicedownid'], $statusCount);
-			if(count($childService))
-				$ret['children'][] = $childService; // append child service to children array
+			if(count($childService)) // recursively returned associative array
+				$ret['children'][] = (object)$childService; // append child service to children array
 		}
 		if(count($ret))
 			$ret['tooltip'] = sprintf($ret['tooltip'], count($ret['children'])); // count children
@@ -147,7 +147,7 @@ class ServiceTree
 		}
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC); // just 1 service with the ID
-		return array(
+		return (object)array(
 			'serviceid'   => $row['serviceid'],
 			'name'        => $row['name'],
 			'status'      => (int)$row['status'],
@@ -157,7 +157,7 @@ class ServiceTree
 			'showsla'     => (int)$row['showsla'],
 			'goodsla'     => $row['goodsla'],
 			'sortorder'   => (int)$row['sortorder'],
-			'threshold'   => array(
+			'threshold'   => (object)array(
 				'normal'      => $row['threshold_normal'],
 				'information' => $row['threshold_information'],
 				'alert'       => $row['threshold_alert'],
@@ -165,7 +165,7 @@ class ServiceTree
 				'major'       => $row['threshold_major'],
 				'critical'    => $row['threshold_critical']
 			),
-			'weight' => array(
+			'weight' => (object)array(
 				'normal'      => $row['weight_normal'],
 				'information' => $row['weight_information'],
 				'alert'       => $row['weight_alert'],
@@ -173,7 +173,7 @@ class ServiceTree
 				'major'       => $row['weight_major'],
 				'critical'    => $row['weight_critical']
 			),
-			'parent' => array(
+			'parent' => (object)array(
 				'serviceid' => $row['parentserviceid'],
 				'name'      => $row['parentname']
 			)

@@ -209,15 +209,15 @@ function ShowEditService(nodeObj, rootServiceName) {
 				id: nodeObj.data.serviceid,
 				name: div.find('input[name=name]').val(),
 				//parent:
-				algorithm: div.find('select[name=algorithm]').val(),
+				algorithm: parseInt(div.find('select[name=algorithm]').val(), 10),
 				goodsla: div.find('input[name=goodSla]').val(),
 				showsla: div.find('input[name=showSla]').prop('checked') ? 1 : 0,
 				triggerid: div.find('input[name=triggerId]').val()
 			};
 			if(retNode.triggerid == '') retNode.triggerid = null;
 			for(var i = 0; i < props.length; ++i) {
-				retNode['weight_'+props[i]] = div.find('input[name=w'+props[i]+']').val(),
-				retNode['threshold_'+props[i]] = div.find('input[name=t'+props[i]+']').val()
+				retNode['weight_'+props[i]] = parseInt(div.find('input[name=w'+props[i]+']').val(), 10),
+				retNode['threshold_'+props[i]] = parseInt(div.find('input[name=t'+props[i]+']').val(), 10)
 			}
 			popup.continueSubmit(retNode); // ok() event will receive a node object
 		}

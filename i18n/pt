@@ -117,6 +117,7 @@ As 5 tabelas adicionais serão criadas no banco do Zabbix.
 Erro ao iniciar a transação para criação das tabelas.
 Erro no commit da criação das tabelas.
 Erro ao criar as tabelas.
+Erro ao preencher as tabelas de limiar/peso.
 
 # inc/ServiceTree.class.php
 Erro ao consultar a lista de serviços.

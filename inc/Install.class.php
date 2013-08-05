@@ -70,6 +70,30 @@ class Install
 				$dbh->rollback();
 				Connection::HttpError(500, I('Failed to create tables.').'<br/>'.$e->getMessage());
 			}
+			self::_FillServiceThresholdWeight($dbh);
+		}
+	}
+
+	/**
+	 * Creates entries on threshold and weight tables for all the services.
+	 * @param PDO $dbh Database connection handle.
+	 */
+	private static function _FillServiceThresholdWeight(PDO $dbh)
+	{
+		try {
+			$dbh->beginTransaction();
+			$dbh->exec('
+				INSERT INTO service_threshold (idservice)
+				SELECT serviceid FROM services
+			');
+			$dbh->exec('
+				INSERT INTO service_weight (idservice)
+				SELECT serviceid FROM services
+			');
+			$dbh->commit();
+		} catch(Exception $e) {
+			$dbh->rollback();
+			Connection::HttpError(500, I('Failed to fill threshold/weight table.').'<br/>'.$e->getMessage());
 		}
 	}
 
@@ -79,7 +103,7 @@ class Install
 	 * @param  string $tableName Name of the table to be checked.
 	 * @return bool
 	 */
-	private static function _TableExists($dbh, $tableName)
+	private static function _TableExists(PDO $dbh, $tableName)
 	{
 		$stmt = $dbh->prepare('SELECT 1 FROM '.$tableName);
 		if(!$stmt->execute())
@@ -92,7 +116,7 @@ class Install
 	 * @param PDO    $dbh Database connection handle.
 	 * @param string $msg Additional text to be outputted.
 	 */
-	private static function _TellDbError($dbh, $msg)
+	private static function _TellDbError(PDO $dbh, $msg)
 	{
 		$err = $dbh->errorInfo();
 		Connection::HttpError(500, "$msg<br/>$err[0] $err[2]");

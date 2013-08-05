@@ -117,6 +117,7 @@ The 5 additional tables will be created in Zabbix database.
 Failed to init transaction for tables creation.
 Failed to commit tables creation.
 Failed to create tables.
+Failed to fill threshold/weight table.
 
 # inc/ServiceTree.class.php
 Failed to query service list.
