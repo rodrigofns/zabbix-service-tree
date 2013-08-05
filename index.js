@@ -15,13 +15,13 @@ $(document).ready(function() {
 	LoadLoginMenu();
 	LoadServicesCombo();
 
-	var timerObj = { id:null };
+	var timerObj = { id:null }; // used to keep track and stop pending executions
 	var treeObj = TreeGraph('treePlot'); // instantiate tree object
 	treeObj.ctrlClick(function(nodeObj, ev) { NodeCtrlClick(timerObj, treeObj, nodeObj); }); // Ctrl+click on node
 
 	$(window).resize(function() { treeObj.fitParentContainer(); }).trigger('resize');
 	$('select#refreshTime').val('180'); // default is 3 min
-	$('select#refreshTime, select#serviceName').change(function() { RefreshTree(timerObj, treeObj); });
+	$('select#refreshTime, select#serviceName').change(function() { RefreshTree(timerObj, treeObj, true); });
 	$('#loginMenu').on('click', 'a#lnkLogin', OnLoginClick);
 	$('#loginMenu').on('click', 'a#lnkLogoff', OnLogoffClick);
 	$('a#collapse').click(function() { treeObj.collapseAll(); this.blur(); return false; });
@@ -109,23 +109,23 @@ function NodeCtrlClick(timerObj, treeObj, nodeObj) {
 				).modalForm({ title:I('Oops...') });
 			});
 			xhr.done(function(data) {
-				RefreshTree(timerObj, treeObj);
+				RefreshTree(timerObj, treeObj, true);
 			});
 		});
 		dlgEditService.cancel(function() {
-			RefreshTree(timerObj, treeObj);
+			RefreshTree(timerObj, treeObj, false);
 		});
 	}
 }
 
-function RefreshTree(timerObj, treeObj) {
+function RefreshTree(timerObj, treeObj, refreshRightNow) {
 	if($('select#serviceName').val() == '') // no service currently selected
 		return;
 	if($('select#serviceName option:first').val() == '')
 		$('select#serviceName option:first').remove(); // remove the first empty option, useless
 	if(timerObj.id !== null)
 		clearTimeout(timerObj.id); // stop any pending execution
-	(function ReloadTreeData() {
+	function ReloadTreeData() {
 		$('#treePlot').hide();
 		$('#toolbox').hide().css({ bottom:($(document).height() / 2 + 10)+'px' }); // prepare toolbox to animate
 		$('select#refreshTime, select#serviceName').attr('disabled', 'disabled');
@@ -157,5 +157,7 @@ function RefreshTree(timerObj, treeObj) {
 				});
 			});
 		});
-	})();
+	}
+	if(refreshRightNow) ReloadTreeData();
+	else timerObj.id = setTimeout(ReloadTreeData, parseInt($('select#refreshTime').val()) * 1000);
 }
