@@ -21,6 +21,8 @@ if(isset($_POST['save']))
 	$data = (object)$_POST['data'];
 	if($data->triggerid == '') $data->triggerid = null;
 
+	ServiceTree::CreateThresholdWeightIfNotExist($dbh, $data->id);
+
 	try {
 		$dbh->beginTransaction();
 		Connection::QueryDatabase($dbh, '

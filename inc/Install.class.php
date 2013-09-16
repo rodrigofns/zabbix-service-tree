@@ -70,30 +70,6 @@ class Install
 				$dbh->rollback();
 				Connection::HttpError(500, I('Failed to create tables.').'<br/>'.$e->getMessage());
 			}
-			self::_FillServiceThresholdWeight($dbh);
-		}
-	}
-
-	/**
-	 * Creates entries on threshold and weight tables for all the services.
-	 * @param PDO $dbh Database connection handle.
-	 */
-	private static function _FillServiceThresholdWeight(PDO $dbh)
-	{
-		try {
-			$dbh->beginTransaction();
-			$dbh->exec('
-				INSERT INTO service_threshold (idservice)
-				SELECT serviceid FROM services
-			');
-			$dbh->exec('
-				INSERT INTO service_weight (idservice)
-				SELECT serviceid FROM services
-			');
-			$dbh->commit();
-		} catch(Exception $e) {
-			$dbh->rollback();
-			Connection::HttpError(500, I('Failed to fill threshold/weight table.').'<br/>'.$e->getMessage());
 		}
 	}
 

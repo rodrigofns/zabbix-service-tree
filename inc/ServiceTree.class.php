@@ -179,4 +179,30 @@ class ServiceTree
 			)
 		);
 	}
+
+	/**
+	 * Creates entries on the tables service_weight and service_threshold if they don't exist.
+	 * @param PDO   $dbh       Database connection handle.
+	 * @param sring $serviceId ID of service to be checked.
+	 */
+	public static function CreateThresholdWeightIfNotExist(PDO $dbh, $serviceId)
+	{
+		try {
+			$stmt_w = Connection::QueryDatabase($dbh,
+				'SELECT idservice FROM service_weight WHERE idservice = ?', $serviceId);
+			if(!$stmt_w->fetch(PDO::FETCH_NUM))
+				Connection::QueryDatabase($dbh, // will insert with default values
+					'INSERT INTO service_weight (idservice) VALUES (?)', $serviceId);
+
+			$stmt_t = Connection::QueryDatabase($dbh,
+				'SELECT idservice FROM service_threshold WHERE idservice = ?', $serviceId);
+			if(!$stmt_t->fetch(PDO::FETCH_NUM))
+				Connection::QueryDatabase($dbh, // will insert with default values
+					'INSERT INTO service_threshold (idservice) VALUES (?)', $serviceId);
+		} catch(Exception $e) {
+			Connection::HttpError(500,
+				sprintf(I('Failed to verify weight/threshold for service "%s".'), $serviceId).
+				'<br/>'.$e->getMessage());
+		}
+	}
 }

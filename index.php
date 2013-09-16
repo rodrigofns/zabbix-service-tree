@@ -42,7 +42,7 @@
 	<div id="topLeftOne"><?=I('IT SERVICES TREE')?><br/>
 		<span id="statusTxt"><?=I('Last updated in')?> <span id="lastUpdate">yyyy-MM-dd HH:mm:ss</span>.</div>
 	<div id="topRiteOne">
-		<?=I('Refresh')?> <select id="refreshTime" title="<?=I('Tree refresh time, in seconds')?>">
+		<?=I('Refresh')?> <select id="refreshTime" title="<?=I('Tree refresh time, in minutes')?>">
 			<option value="60">1 <?=I('min')?></option>
 			<option value="120">2 <?=I('min')?></option>
 			<option value="180">3 <?=I('min')?></option>
@@ -54,7 +54,7 @@
 		<span id="loginMenu"></span>
 	</div>
 	<div id="toolbox"><span id="numNodes">0</span> <?=I('nodes')?>
-		<? for($i = 0; $i <= count(StatusColor::$VALUES); ++$i) { ?>
+		<? for($i = 0; $i <= count(StatusColor::$VALUES) - 1; ++$i) { ?>
 		<span class="numStatus" id="numStatus<?=$i?>" style="background:<?=StatusColor::$VALUES[$i]?>;">0</span>
 		<? } ?>
 		<a id="collapse" href="#" title="<?=I('Collapse all tree nodes')?>"><?=I('collapse all')?></a></span>
