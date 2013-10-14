@@ -8,6 +8,7 @@
 			overflow-y:auto;
 		}
 		th { background:#EEE; }
+		img#serviceIcon { width:auto; height:auto; max-width:128px; max-height:128px; border:1px solid #DDD; margin-top:6px; }
 	</style>
 	<div id="serviceEditWnd">
 		<input type="hidden" name="rootServiceName" value=""/>
@@ -57,8 +58,11 @@
 			</table>
 		</div>
 		<div>&nbsp;<br/>
-			&nbsp; &nbsp; &nbsp; <input type="button" name="setdef" value="<?=I('default values')?>"
+			&nbsp; &nbsp; &nbsp; <input type="button" name="setdef" value="&larr; <?=I('default values')?>"
 				title="<?=I('Set default values to all fields')?>"/>
+			<br/><br/><br/>
+			&nbsp; &nbsp; &nbsp; <input type="button" name="changeIcon" value="<?=I('change icon')?>" title="<?=I('Change current service icon')?>"/><br/>
+			&nbsp; &nbsp; &nbsp; <img src="" id="serviceIcon"/></a>
 		</div>
 		<!--<hr/>
 		<?=I('Other actions')?>:<br/>
@@ -73,67 +77,68 @@ function ShowEditService(nodeObj, rootServiceName) {
 
 	// Pre-loading housekeeping.
 
-	var div = $('div#dialogEditService'); // pointer to DIV
+	var $div = $('div#dialogEditService'); // pointer to DIV
 	var props = [ 'normal', 'information', 'alert', 'average', 'major', 'critical' ];
 
 	function FillFields(serviceObj) {
-		var y = serviceObj !== null;
-		div.find('input[name=name]').val(y ? serviceObj.name : '');
-		div.find('input[name=parentServiceName]').val(y ? serviceObj.parent.name : '');
-		div.find('input[name=parentServiceId]').val(y ? serviceObj.parent.serviceid : '');
-		div.find('select[name=algorithm]').val(y ? serviceObj.algorithm : 0);
-		div.find('input[name=goodSla]').val(y ? serviceObj.goodsla : '');
-		div.find('input[name=showSla]').prop('checked', y ? (serviceObj.showsla == 1) : false).triggerHandler('change');
+		var y = (serviceObj !== null);
+		$div.find('input[name=name]').val(y ? serviceObj.name : '');
+		$div.find('input[name=parentServiceName]').val(y ? serviceObj.parent.name : '');
+		$div.find('input[name=parentServiceId]').val(y ? serviceObj.parent.serviceid : '');
+		$div.find('select[name=algorithm]').val(y ? serviceObj.algorithm : 0);
+		$div.find('input[name=goodSla]').val(y ? serviceObj.goodsla : '');
+		$div.find('input[name=showSla]').prop('checked', y ? (serviceObj.showsla == 1) : false).triggerHandler('change');
 
 		if(y && serviceObj.children.length === 0) { // a leaf node
-			div.find('input[name=triggerId]').val(serviceObj.triggerid);
-			div.find('input[name=triggerTxt]').val(serviceObj.triggername);
-			div.find('a#lnkChooseTrigger').show();
+			$div.find('input[name=triggerId]').val(serviceObj.triggerid);
+			$div.find('input[name=triggerTxt]').val(serviceObj.triggername);
+			$div.find('a#lnkChooseTrigger').show();
 		} else { // a non-leaf node
-			div.find('input[name=triggerId]').val('');
-			div.find('input[name=triggerTxt]').val(y ? '('+I('not a leaf node, no trigger')+')' : '');
-			div.find('a#lnkChooseTrigger').hide();
+			$div.find('input[name=triggerId]').val('');
+			$div.find('input[name=triggerTxt]').val(y ? '('+I('not a leaf node, no trigger')+')' : '');
+			$div.find('a#lnkChooseTrigger').hide();
 		}
 
 		for(var i = 0; i < props.length; ++i) {
-			div.find('input[name=w'+props[i]+']').val(y ? serviceObj.weight[props[i]] : '');
-			div.find('input[name=t'+props[i]+']').val(y ? serviceObj.threshold[props[i]] : '');
+			$div.find('input[name=w'+props[i]+']').val(y ? serviceObj.weight[props[i]] : '');
+			$div.find('input[name=t'+props[i]+']').val(y ? serviceObj.threshold[props[i]] : '');
 		}
+
+		$div.find('#serviceIcon')
+			.attr('src', (!y || serviceObj.imageurl === null) ? '' : serviceObj.imageurl)
+			.data('id', (!y || serviceObj.imageid === null) ? null : serviceObj.imageid); // keep ID
 	}
 
-	div.find('input[name=rootServiceName]').val(rootServiceName); // keep service name on input/hidden
+	$div.find('input[name=rootServiceName]').val(rootServiceName); // keep service name on input/hidden
 	FillFields(null); // clear fields
 
 	// Displaying the form.
 
-	var popup = div.modalForm({ hasCancel:true, title:I('Edit service') });
+	var popup = $div.modalForm({ hasCancel:true, title:I('Edit service') });
 
-	var events = {
-		lnkDeleteService: function(ev) {
+	function BindEvents() {
+		$div.find('a#lnkDeleteService').on('click', function(ev) {
 			$('<span>'+I('Remove service')+'...</span>').modalForm({ event:ev });
 			return false;
-		},
-
-		lnkCreateChildService: function(ev) {
+		});
+		$div.find('a#lnkNewChildService').on('click', function(ev) {
 			$('<span>'+I('New child')+'...</span>').modalForm({ event:ev });
 			return false;
-		},
-
-		lnkChangeParentService: function(ev) {
-			var rootName = div.find('input[name=rootServiceName]').val();
-			var curParentId = div.find('input[name=parentServiceId]').val();
+		});
+		$div.find('a#lnkChangeParent').on('click', function(ev) {
+			var rootName = $div.find('input[name=rootServiceName]').val();
+			var curParentId = $div.find('input[name=parentServiceId]').val();
 
 			var dlgChooseParent = ShowChooseParent(rootName, nodeObj.data.serviceid, curParentId); // dialogChooseParent.php
 			dlgChooseParent.ok(function(retService) {
-				div.find('input[name=parentServiceName]').val(retService.name); // put back new values
-				div.find('input[name=parentServiceId]').val(retService.id);
+				$div.find('input[name=parentServiceName]').val(retService.name); // put back new values
+				$div.find('input[name=parentServiceId]').val(retService.id);
 			});
 			return false;
-		},
-
-		lnkChooseTrigger: function(ev) {
-			var trId = div.find('input[name=triggerId]'); // pointers to INPUTs; get current trigger ID/name
-			var trName = div.find('input[name=triggerTxt]');
+		});
+		$div.find('a#lnkChooseTrigger').on('click', function(ev) {
+			var trId = $div.find('input[name=triggerId]'); // pointers to INPUTs; get current trigger ID/name
+			var trName = $div.find('input[name=triggerTxt]');
 
 			var dlgChooseTrigger = ShowChooseTrigger(trId.val(), trName.val()); // dialogChooseTrigger.php
 			dlgChooseTrigger.ok(function(retTrigger) {
@@ -141,31 +146,39 @@ function ShowEditService(nodeObj, rootServiceName) {
 				trName.val(retTrigger.name);
 			});
 			return false;
-		},
-
-		chkToggleSla: function() {
-			div.find('input[name=goodSla]').prop('readonly', !$(this).prop('checked'));
-		},
-
-		btnSetDefaults: function(ev) {
+		});
+		$div.find('input[name=showSla]').on('change', function() {
+			$div.find('input[name=goodSla]').prop('readonly', !$(this).prop('checked'));
+		});
+		$div.find('input[name=setdef]').on('click', function(ev) {
 			for(var i = 0; i < props.length; ++i) {
-				div.find('input[name=w'+props[i]+']').val(i == 0 ? 0 : Math.pow(10, i - 1));
-				div.find('input[name=t'+props[i]+']').val(i == 0 ? 0 : Math.pow(10, i - 1));
+				$div.find('input[name=w'+props[i]+']').val(i == 0 ? 0 : Math.pow(10, i - 1));
+				$div.find('input[name=t'+props[i]+']').val(i == 0 ? 0 : Math.pow(10, i - 1));
 			}
-		}
+		});
+		$div.find('input[name=changeIcon]').on('click', function(ev) {
+			var dlgChooseIcon = ShowChooseIcon(); // dialogChooseIcon.php
+			dlgChooseIcon.ok(function(image) {
+				var $img = $div.find('#serviceIcon');
+				(image === null) ?
+					$img.attr('src', '').data('id', null) :
+					$img.attr('src', image.imageurl).data('id', image.imageid);
+			});
+		});
+	}
+
+	var UnbindEvents = function() {
+		$div.find('a#lnkDeleteService').off('click');
+		$div.find('a#lnkNewChildService').off('click');
+		$div.find('a#lnkChangeParent').off('click');
+		$div.find('a#lnkChooseTrigger').off('click');
+		$div.find('input[name=showSla]').off('change');
+		$div.find('input[name=setdef]').off('click');
+		$div.find('input[name=changeIcon]').off('click');
 	};
 
-	var unbindEvents = function() {
-		div.find('a#lnkDeleteService').off('click');
-		div.find('a#lnkNewChildService').off('click');
-		div.find('a#lnkChangeParent').off('click');
-		div.find('a#lnkChooseTrigger').off('click');
-		div.find('input[name=showSla]').off('change');
-		div.find('input[name=setdef]').off('click');
-	};
-
-	popup.ok(unbindEvents);     // after user clicks OK
-	popup.cancel(unbindEvents); // after user clicks Cancel
+	popup.ok(UnbindEvents);     // after user clicks OK
+	popup.cancel(UnbindEvents); // after user clicks Cancel
 
 	popup.ready(function() { // right before form appears
 		var xhr = $.post('ajaxService.php', { serviceId:nodeObj.data.serviceid }); // get service data
@@ -176,26 +189,21 @@ function ShowEditService(nodeObj, rootServiceName) {
 			).modalForm({ title:I('Oops...') }).ok(function() { popup.abort(); });
 		});
 		xhr.done(function(data) { // we got service data, now put 'em in the fields
-			div.find('a#lnkDeleteService').on('click', events.lnkDeleteService); // setup events
-			div.find('a#lnkNewChildService').on('click', events.lnkCreateChildService);
-			div.find('a#lnkChangeParent').on('click', events.lnkChangeParentService);
-			div.find('a#lnkChooseTrigger').on('click', events.lnkChooseTrigger);
-			div.find('input[name=showSla]').on('change', events.chkToggleSla);
-			div.find('input[name=setdef]').on('click', events.btnSetDefaults);
+			BindEvents();
 			data.children = nodeObj.children;
 			FillFields(data); // object with tons of info of the service
 		});
 	});
 
-	popup.validateSubmit(function() {
+	popup.validateSubmit(function() { // right after user clicks OK
 		function ValidateFields() {
-			if(div.find('input[name=name]').val() == '') {
+			if($div.find('input[name=name]').val() == '') {
 				$('<span>'+I('The service must have a name')+'.</span>').modalForm({ title:I('Oops...') });
 				return false;
 			}
 			for(var i = 0; i < props.length; ++i) {
-				var filled = div.find('input[name=w'+props[i]+']').val() != ''
-					&& div.find('input[name=t'+props[i]+']').val() != '';
+				var filled = $div.find('input[name=w'+props[i]+']').val() != ''
+					&& $div.find('input[name=t'+props[i]+']').val() != '';
 				if(!filled) {
 					$('<span>'+I('All values must be filled in')+'.</span>').modalForm({ title:I('Oops...') });
 					return false;
@@ -204,20 +212,21 @@ function ShowEditService(nodeObj, rootServiceName) {
 			return true;
 		}
 		if(ValidateFields()) {
-			unbindEvents();
+			UnbindEvents();
 			var retNode = { // build return object
 				id: nodeObj.data.serviceid,
-				name: div.find('input[name=name]').val(),
+				name: $div.find('input[name=name]').val(),
 				//parent:
-				algorithm: parseInt(div.find('select[name=algorithm]').val(), 10),
-				goodsla: div.find('input[name=goodSla]').val(),
-				showsla: div.find('input[name=showSla]').prop('checked') ? 1 : 0,
-				triggerid: div.find('input[name=triggerId]').val()
+				algorithm: parseInt($div.find('select[name=algorithm]').val(), 10),
+				goodsla: $div.find('input[name=goodSla]').val(),
+				showsla: $div.find('input[name=showSla]').prop('checked') ? 1 : 0,
+				triggerid: $div.find('input[name=triggerId]').val(),
+				imageid: $div.find('#serviceIcon').data('id')
 			};
 			if(retNode.triggerid == '') retNode.triggerid = null;
 			for(var i = 0; i < props.length; ++i) {
-				retNode['weight_'+props[i]] = parseInt(div.find('input[name=w'+props[i]+']').val(), 10),
-				retNode['threshold_'+props[i]] = parseInt(div.find('input[name=t'+props[i]+']').val(), 10)
+				retNode['weight_'+props[i]] = parseInt($div.find('input[name=w'+props[i]+']').val(), 10),
+				retNode['threshold_'+props[i]] = parseInt($div.find('input[name=t'+props[i]+']').val(), 10)
 			}
 			popup.continueSubmit(retNode); // ok() event will receive a node object
 		}

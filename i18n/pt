@@ -54,6 +54,13 @@ Erro na consulta dos grupos para o nó %s.
 Erro na consulta dos hosts para o grupo %s.
 Erro na consulta das triggers para o host %s.
 
+# dialogChooseIcon.php
+Escolher ícone
+Sem imagem
+Escolher imagem
+Erro na consulta das imagens
+Nenhuma imagem foi selecionada.
+
 # dialogChooseTrigger.php
 Atual
 Nó
@@ -92,6 +99,8 @@ Alto
 Crítico
 valores default
 Preencher os campos com os valores default
+alterar ícone
+Alterar o ícone atual do serviço
 Outras ações
 Remover este serviço da árvore
 deletar este serviço

@@ -61,6 +61,7 @@
 	</div>
 	<? include('dialogLogin.php'); ?>
 	<? include('dialogEditService.php'); ?>
+	<? include('dialogChooseIcon.php'); ?>
 	<? include('dialogChooseTrigger.php'); ?>
 </body>
 </html>

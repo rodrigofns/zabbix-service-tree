@@ -54,6 +54,13 @@ Failed to query groups for node %s.
 Failed to query hosts for group %s.
 Failed to query triggers host %s.
 
+# dialogChooseIcon.php
+Choose icon
+No image
+Choose image
+Failed to query images
+No image has been selected.
+
 # dialogChooseTrigger.php
 Current
 Node
@@ -92,6 +99,8 @@ Major
 Critical
 default values
 Set default values to all fields
+change icon
+Change current service icon
 Other actions
 Remove this service from tree
 delete this service

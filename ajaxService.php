@@ -59,6 +59,11 @@ if(isset($_POST['save']))
 			WHERE serviceid = ?
 		', $data->name, $data->algorithm, $data->triggerid,
 			$data->showsla, $data->goodsla, $data->id);
+
+		Connection::QueryDatabase($dbh, 'DELETE FROM service_icon WHERE idservice = ?', $data->id);
+		if($data->imageid !== null)
+			Connection::QueryDatabase($dbh, 'INSERT INTO service_icon (idservice,idicon) VALUES (?,?)', $data->id, $data->imageid);
+
 		$dbh->commit();
 	} catch(Exception $e) {
 		$dbh->rollback();
@@ -74,6 +79,12 @@ else if(isset($_REQUEST['serviceId']))
 	// --- Query service information. ------------------------------------------
 	header('Content-Type: application/json');
 	echo json_encode( ServiceTree::GetInfo($dbh, $_REQUEST['serviceId']) );
+}
+else if(isset($_POST['images']))
+{
+	// --- Query all available images from Zabbix. -----------------------------
+	header('Content-Type: application/json');
+	echo json_encode( ServiceTree::GetAllImages($dbh) );
 }
 else
 {

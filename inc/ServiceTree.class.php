@@ -129,12 +129,15 @@ class ServiceTree
 			$stmt = Connection::QueryDatabase($dbh, "
 				SELECT s.*, st.*, sw.*,
 					REPLACE(t.description, '{HOSTNAME}', h.host) AS triggerdesc,
-					s2.serviceid AS parentserviceid, s2.name AS parentname
+					s2.serviceid AS parentserviceid, s2.name AS parentname,
+					i.imageid
 				FROM services s
 				LEFT JOIN service_threshold st ON st.idservice = s.serviceid
 				LEFT JOIN service_weight sw ON sw.idservice = s.serviceid
 				LEFT JOIN services_links sl ON sl.servicedownid = s.serviceid
 					LEFT JOIN services s2 ON s2.serviceid = sl.serviceupid
+				LEFT JOIN service_icon si ON si.idservice = s.serviceid
+					LEFT JOIN images i ON i.imageid = si.idicon
 				LEFT JOIN triggers t ON t.triggerid = s.triggerid
 					LEFT JOIN functions f ON f.triggerid = t.triggerid
 					LEFT JOIN items ON items.itemid = f.itemid
@@ -157,6 +160,8 @@ class ServiceTree
 			'showsla'     => (int)$row['showsla'],
 			'goodsla'     => $row['goodsla'],
 			'sortorder'   => (int)$row['sortorder'],
+			'imageid'     => $row['imageid'],
+			'imageurl'    => ($row['imageid'] === null) ? null : Connection::BaseUrl().'inc/image.php?id='.$row['imageid'],
 			'threshold'   => (object)array(
 				'normal'      => $row['threshold_normal'],
 				'information' => $row['threshold_information'],
@@ -178,6 +183,30 @@ class ServiceTree
 				'name'      => $row['parentname']
 			)
 		);
+	}
+
+	/**
+	 * Retrieves URLs of all available images in Zabbix.
+	 * @param  PDO   $dbh Database connection handle.
+	 * @return array      URLs and IDs of images.
+	 */
+	public static function GetAllImages(PDO $dbh)
+	{
+		try {
+			$stmt = Connection::QueryDatabase($dbh, 'SELECT imageid, name FROM images');
+		} catch(Exception $e) {
+			Connection::HttpError(500, I('Failed to query images').''.
+				'<br/>'.$e->getMessage());
+		}
+		$ret = array();
+		while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$ret[] = (object)array(
+				'name'     => $row['name'],
+				'imageid'  => $row['imageid'],
+				'imageurl' => Connection::BaseUrl().'inc/image.php?id='.$row['imageid']
+			);
+		}
+		return $ret;
 	}
 
 	/**
