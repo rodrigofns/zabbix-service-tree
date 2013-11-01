@@ -3,6 +3,7 @@
 	require_once('inc/Install.class.php');
 	require_once('inc/StatusColor.class.php');
 	session_start();
+	function_exists('curl_init') or die('cURL module not found.');
 	Install::CheckDbTables();
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -29,9 +30,9 @@
 	</style>
 	<title><?=I('IT Services Tree')?></title>
 	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
-	<script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
-	<script type="text/javascript" src="js/jquery.modalForm.js"></script>
-	<script type="text/javascript" src="js/TreeGraph.js"></script>
+	<script type="text/javascript" src="js/jquery.dateFormat-1.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.modalForm.min.js"></script>
+	<script type="text/javascript" src="js/TreeGraph.min.js"></script>
 	<script type="text/javascript" src="index.js"></script>
 </head>
 <body>
