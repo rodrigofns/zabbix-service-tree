@@ -2,7 +2,6 @@
 session_start();
 require('inc/Connection.class.php');
 require('inc/ServiceTree.class.php');
-require('inc/StatusColor.class.php');
 
 require_once('__conf.php');
 require_once('i18n/i18n.php');

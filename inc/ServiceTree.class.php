@@ -88,6 +88,7 @@ class ServiceTree
 			Connection::HttpError(500, sprintf(I('Failed to query service for "%s".'), $serviceId).
 				'<br/>'.$e->getMessage());
 		}
+		$colors = self::GetColors($dbh);
 
 		$ret = array(); // actually an associative array
 		while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -95,7 +96,8 @@ class ServiceTree
 				$ret = array( // this data structure matches the HTML5 tree
 					'text'    => (strlen($row['name']) > 16 ? substr($row['name'], 0, 16).'...' : $row['name']),
 					'tooltip' => $row['name']."\n".I('Children').": %d\n".I('Trigger').': '.$row['triggerdesc'],
-					'color'   => StatusColor::$VALUES[ (int)$row['status'] ],
+					//~ 'color'   => StatusColor::$VALUES[ (int)$row['status'] ],
+					'color'   => $colors[ (int)$row['status'] ],
 					'image'   => ($row['imageid'] === null) ? null : Connection::BaseUrl().'inc/image.php?id='.$row['imageid'],
 					'data'    => (object)array( // this "data" section is free-form and will be preserved across tree
 						'serviceid'   => $row['serviceid'],
@@ -207,6 +209,35 @@ class ServiceTree
 			);
 		}
 		return $ret;
+	}
+
+	/*
+	 * Retrieves the 6 colors for the status.
+	 * @param  PDO   $dbh Database connection handle.
+	 * @return array      The colors in RGB hexadecimal format.
+	 */
+	public static function GetColors(PDO $dbh)
+	{
+		try {
+			$stmt = Connection::QueryDatabase($dbh, '
+				SELECT severity_color_0, severity_color_1, severity_color_2,
+					severity_color_3, severity_color_4, severity_color_5
+				FROM config
+			');
+		} catch(Exception $e) {
+			Connection::HttpError(500, I('Failed to query colors').''.
+				'<br/>'.$e->getMessage());
+		}
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		return array(
+			//~ '#'.$row['severity_color_0'], // green 'rgba(30, 245, 30, 0.4)'
+			'rgba(30, 245, 30, 0.4)',
+			'#'.$row['severity_color_1'], // blue 'rgba(41, 226, 248, 0.4)'
+			'#'.$row['severity_color_2'], // yellow 'rgba(255, 255, 60, 0.4)'
+			'#'.$row['severity_color_3'], // orange 'rgba(255, 147, 96, 0.45)'
+			'#'.$row['severity_color_4'], // soft red 'rgba(255, 40, 40, 0.45)'
+			'#'.$row['severity_color_5']  // FUBAR red 'rgba(255, 0, 0, 0.65)'
+		);
 	}
 
 	/**

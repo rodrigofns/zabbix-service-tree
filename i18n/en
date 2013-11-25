@@ -134,4 +134,5 @@ Failed to query service ID for "%s".
 Could not find service "%s".
 Failed to query service for "%s".
 Children
+Failed to query colors
 Failed to verify weight/threshold for service "%s".

@@ -1,10 +1,13 @@
 <?php
 	require_once('__conf.php');
+	require_once('inc/Connection.class.php');
 	require_once('inc/Install.class.php');
-	require_once('inc/StatusColor.class.php');
+	require_once('inc/ServiceTree.class.php');
 	session_start();
 	function_exists('curl_init') or die('cURL module not found.');
-	Install::CheckDbTables();
+	$dbh = Connection::GetDatabase();
+	Install::CheckDbTables($dbh);
+	$colors = ServiceTree::GetColors($dbh);
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	"http://www.w3.org/TR/html4/loose.dtd">
@@ -55,8 +58,8 @@
 		<span id="loginMenu"></span>
 	</div>
 	<div id="toolbox"><span id="numNodes">0</span> <?=I('nodes')?>
-		<? for($i = 0; $i <= count(StatusColor::$VALUES) - 1; ++$i) { ?>
-		<span class="numStatus" id="numStatus<?=$i?>" style="background:<?=StatusColor::$VALUES[$i]?>;">0</span>
+		<? for($i = 0; $i <= count($colors) - 1; ++$i) { ?>
+		<span class="numStatus" id="numStatus<?=$i?>" style="background:<?=$colors[$i]?>;">0</span>
 		<? } ?>
 		<a id="collapse" href="#" title="<?=I('Collapse all tree nodes')?>"><?=I('collapse all')?></a></span>
 	</div>

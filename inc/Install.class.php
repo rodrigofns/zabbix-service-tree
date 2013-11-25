@@ -12,10 +12,10 @@ class Install
 {
 	/**
 	 * Checks if the required tables exist in Zabbix database.
+	 * @param PDO $dbh  Database connection handle.
 	 */
-	public static function CheckDbTables()
+	public static function CheckDbTables(PDO $dbh)
 	{
-		$dbh = Connection::GetDatabase();
 		if(!self::_TableExists($dbh, 'service_threshold')) {
 			error_log(I('The 5 additional tables will be created in Zabbix database.'), 0);
 			$bigint = ($dbh->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') ? 'BIGINT' : 'BIGINT UNSIGNED';
