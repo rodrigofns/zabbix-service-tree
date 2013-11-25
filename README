@@ -1,2 +1,17 @@
 This work has been first published on Zabbix forums:
 https://www.zabbix.com/forum/showthread.php?t=41584
+install 
+shell#git clone https://github.com/rodrigofns/zabbix-service-tree
+shell#cp -rf zabbix-service-tree /var/www/html
+shell#vim /var/www/html/zabbix-service-tree/__config.php
+```
+$ZABBIX_CONF = '/usr/share/zabbix/conf/zabbix.conf.php';
+$ZABBIX_API = 'http://localhost/zabbix/api';
+```
+shell#vim php.ini
+```
+short_open_tag = On
+```
+shell#service httpd restart
+
+To access it use http://X.X.X.X/zabbix/zabbix-service-tree
