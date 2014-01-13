@@ -11,5 +11,5 @@ if(!defined('IMAGE_FORMAT_PNG'))
 // Log is likely to be stored in /var/log/apache2/error.log .
 
 $LANG = 'en';
-$ZABBIX_CONF = 'CAMINHO/conf/zabbix.conf.php';
-$ZABBIX_API = 'URL';
+#$ZABBIX_CONF = 'CAMINHO/conf/zabbix.conf.php';
+#$ZABBIX_API = 'URL';
