@@ -15,7 +15,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
-	<? require_once('i18n/i18n.php'); i18n_set_map('en', $LANG); ?>
+	<?php require_once('i18n/i18n.php'); i18n_set_map('en', $LANG); ?>
 	<style type="text/css">
 		html,body { height:100%; margin:0; overflow:hidden; }
 		body,table,input,select { font:10pt Arial; color:#181818; }
@@ -58,14 +58,14 @@
 		<span id="loginMenu"></span>
 	</div>
 	<div id="toolbox"><span id="numNodes">0</span> <?=I('nodes')?>
-		<? for($i = 0; $i <= count($colors) - 1; ++$i) { ?>
+		<?php for($i = 0; $i <= count($colors) - 1; ++$i) { ?>
 		<span class="numStatus" id="numStatus<?=$i?>" style="background:<?=$colors[$i]?>;">0</span>
-		<? } ?>
+		<?php } ?>
 		<a id="collapse" href="#" title="<?=I('Collapse all tree nodes')?>"><?=I('collapse all')?></a></span>
 	</div>
-	<? include('dialogLogin.php'); ?>
-	<? include('dialogEditService.php'); ?>
-	<? include('dialogChooseIcon.php'); ?>
-	<? include('dialogChooseTrigger.php'); ?>
+	<?php include('dialogLogin.php'); ?>
+	<?php include('dialogEditService.php'); ?>
+	<?php include('dialogChooseIcon.php'); ?>
+	<?php include('dialogChooseTrigger.php'); ?>
 </body>
 </html>

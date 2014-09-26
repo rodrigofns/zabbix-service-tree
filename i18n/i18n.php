@@ -40,12 +40,12 @@ function i18n_set_map($srcLang, $destLang=null, $generateJs=true) {
 
 	?><script>
 	var i18n_data = []; // global i18n dictionary for JS
-	<? foreach($i18n_data as $key => $val) {
+	<?php foreach($i18n_data as $key => $val) {
 		printf('i18n_data["%s"]="%s";',
 			str_replace('"', '\"', $key), str_replace('"', '\"', $val) );
 	} ?>
 	function I(text) { // global i18n function for JS
 		return i18n_data[text];
 	}
-	</script><?
+	</script><?php
 }

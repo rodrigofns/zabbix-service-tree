@@ -24,7 +24,7 @@ else if(isset($_POST['user']) && isset($_POST['pass']))
 	try {
 		$hash = $zabbix->autenticar($_POST['user'], $_POST['pass']);
 	} catch(Exception $e) {
-		Connection::HttpError(401, sprintf(I('Zabbix login failed for user %s.'), $_POST[user]));
+		Connection::HttpError(401, sprintf(I('Zabbix login failed for user %s.'), $_POST['user']));
 	}
 
 	$_SESSION['user'] = $_POST['user']; // save session data
